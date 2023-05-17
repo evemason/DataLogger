@@ -1,8 +1,11 @@
 from tkinter import *
+
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 
-Categories = 6
+Categories = np.array(["Cactus", "Tropical", "Alpine", "Bulbs", "Climbers", "Ferns"])
 
 window = Tk()
 
@@ -18,9 +21,9 @@ text = str(width) + "x" + str(height) + "+" + str(XPOS) + "+" + str(YPOS)
 
 
 
-for i in range(Categories):
-    btn = Button(window, text = "Cactus", bd = 0, font= "Arial", bg = "darkseagreen3", fg = "white", relief=GROOVE, height= 4, width = 10)
-    btn.place(x = 0, y = i * height/Categories) 
+for i in range(len(Categories)):
+    btn = Button(window, text = Categories[i], bd = 0, font= "Arial", bg = "darkseagreen3", fg = "white", relief=GROOVE, height= 4, width = 10)
+    btn.place(x = 0, y = i * height/len(Categories))
     i = i + 1
 
 sensors = ["Light", "Moisture", "Temperature"]
