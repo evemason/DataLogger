@@ -2,12 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
-style.use('fivethirtyeight')
+#style.use('fivethirtyeight')
+#fig = plt.figure(figsize=(6,5), dpi=100)
+#ax1 = fig.add_subplot(1,1,1)
 
-fig = plt.figure(figsize=(6,5), dpi=100)
-ax1 = fig.add_subplot(1,1,1)
-
-def animate(i):
+def animate():
+    style.use('fivethirtyeight')
+    fig = plt.figure(figsize=(6,5), dpi=100)
+    ax1 = fig.add_subplot(1,1,1)
     graph_data = open('Sample.txt','r').read()
     lines = graph_data.split('\n')
     xs = []
@@ -20,5 +22,5 @@ def animate(i):
     ax1.clear()
     ax1.plot(xs, ys)
 
-ani = animation.FuncAnimation(fig, animate, interval=1000)
-plt.show()
+#ani = animation.FuncAnimation(fig, animate, interval=1000)
+#plt.show()

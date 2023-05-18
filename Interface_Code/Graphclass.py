@@ -1,15 +1,22 @@
 import tkinter as tk
 from tkinter import *
 
-class PageThree(tk.Frame):
+window = Tk()
+window.title("Plant Care")
+window.geometry("800x500")
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Graph Page!", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
+class Interface:
+    def __init__(self, master):
+        myFrame = Frame(master)
+        myFrame.pack()
 
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        self.myButton = Button(master, text = "Click Me!", command = self.clicker)
+        self.myButton.pack(pady=20)
+    
+    def clicker(self):
+        print("Look you clicked a button!")
 
- 
+w = Interface(window)
+
+
+window.mainloop()
