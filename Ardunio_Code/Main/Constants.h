@@ -8,8 +8,8 @@ extern const int moisture_pin = A2;
 extern const int Led = 2;
 
 // resistor values 
-extern int R_const_light = 500;
-extern int R_const_temp = 500;
+extern int R_const_light = 100000;
+extern int R_const_temp = 100;
 extern int V_high = 5;
 extern int V_ground = 0;
 extern int V_low = -5;
