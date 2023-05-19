@@ -24,7 +24,7 @@ def extract_data(plant_name):
     light_level_low = light_low[index]
     light_level_high = light_high[index]
 
-    print(water_level_high, water_level_low, temp_level_high, temp_level_low, light_level_high, light_level_low)
+    return water_level_high, water_level_low, temp_level_high, temp_level_low, light_level_high, light_level_low)
 
 
 extract_data("Cactus")
