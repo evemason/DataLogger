@@ -1,11 +1,10 @@
 from tkinter import *
 from matplotlib.figure import Figure
 import numpy as np
-from LiveGraph import animate
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+import seaborn as sb
 
 colour_light = "palegreen3"
 colour_dark = "palegreen4"
@@ -19,10 +18,13 @@ window.configure(bg=colour_light)
 
 
 style.use('ggplot')
-fig = Figure(figsize=(4,4), dpi=100)
-ax1 = fig.add_subplot(1,1,1)
+#fig = Figure(figsize=(4,4), dpi=100)
+#ax1 = fig.add_subplot(1,1,1)
 
-def animate(i):
+bar1=None
+
+def animate():
+    global bar1
     graph_data = open('Sample.txt','r').read()
     lines = graph_data.split('\n')
     xs = []
@@ -32,13 +34,25 @@ def animate(i):
             x, y = line.split(',')
             xs.append(float(x))
             ys.append(float(y))
-    ax1.clear()
-    ax1.plot(xs, ys)
+    fig = Figure(figsize=(4,4), dpi=100)
+    ax1 = fig.add_subplot(1,1,1)
+    ax1.plot(xs,ys)
 
-ani = animation.FuncAnimation(fig, animate, interval=1000)
+    if bar1: 
+        bar1.get_tk_widget().pack_forget()
 
-bar1 = FigureCanvasTkAgg(fig, window)
-bar1.get_tk_widget().place(x=130, y=185)
+    bar1 = FigureCanvasTkAgg(fig,window)
+    bar1.draw()
+    bar1.get_tk_widget().place(x=130, y=185)
+    window.after(100,animate)
+
+window.after(1,animate)
+
+#ani = animation.FuncAnimation(fig, animate, interval=1000)
+
+#bar1 = FigureCanvasTkAgg(fig, window)
+#bar1.get_tk_widget().place(x=130, y=185)
+
 
 width = 800
 height = 600
@@ -59,11 +73,6 @@ for i in range(len(sensors)):
     btn1 = btn = Button(window, text = sensors[i], bd = 0, font= "Arial", bg = colour_dark, fg = "white", height= 5, width = 18)
     btn1.place(x = (i+1)*(width-115)/len(sensors) - 100, y = 50) 
 
-
-class Interface:
-    def __init__(self, master):
-        myFrame = Frame(master)
-        myFrame
 
 window.geometry(text)
 window.mainloop()
