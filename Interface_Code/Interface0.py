@@ -1,15 +1,17 @@
 from tkinter import *
+import tkinter as tk
 from matplotlib.figure import Figure
 import numpy as np
 import matplotlib.animation as animation
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import seaborn as sb
+import pandas as pd
 
 colour_light = "palegreen3"
 colour_dark = "palegreen4"
 
-Categories = np.array(["Cactus", "Tropical", "Alpine", "Bulbs", "Climbers", "Ferns"])
+Categories = ["Cactus", "Tropical", "Alpine", "Bulbs", "Climbers", "Ferns"]
 
 window = Tk()
 
@@ -62,11 +64,58 @@ YPOS = 100
 text = str(width) + "x" + str(height) + "+" + str(XPOS) + "+" + str(YPOS)
 
 
+data = pd.read_csv(r'C:\Users\lizzi\DataLogger\Interface_Code\Database\Plant_data.csv')
+
+print(data)
+Categories = ["Cactus", "Tropical", "Alpine", "Bulbs", "Climbers", "Ferns"]
+
+water_high = data['water_high'].tolist()
+water_low = data['water_low'].tolist()
+temp_high = data['temp_high'].tolist()
+temp_low = data['temp_low'].tolist()
+light_high = data['light_high'].tolist()
+light_low = data['light_low'].tolist()
+
+def extract_data(plant_name):
+    index = Categories.index(plant_name)
+    water_level_high = water_high[index]
+    water_level_low = water_low[index]
+    temp_level_low = temp_low[index]
+    temp_level_high = temp_high[index]
+    light_level_low = light_low[index]
+    light_level_high = light_high[index]
+
+    return water_level_high, water_level_low, temp_level_high, temp_level_low, light_level_high, light_level_low
+
+
+def entry_update(name):
+    text = extract_data(name)
+    entry.delete("1.0", tk.END)
+    entry.insert("1.0",text)
+
+
+entry = Text(window, bd = 0, width = 25, height = 22)
+entry.place(x = 550, y = 220)
+
+recommendations = Label(window, text = "Plant care recommendations", bg = colour_dark, fg = "white", width = 28)
+recommendations.place(x = 550, y = 200)
+
+button_dict= {}
+
+#to create multiple buttons with different commands use a dictionary
+for i in range(len(Categories)):
+    def function(x = Categories[i]):
+        return entry_update(x)
+
+    button_dict[i] = tk.Button(window, text = Categories[i], bd = 0, font = "Arial", bg = colour_dark, fg = "white", height = 4, width = 10 ,command = function)
+    button_dict[i].place(x=0, y = i *height/len(Categories))
+
+''' 
 for i in range(len(Categories)):
     btn = Button(window, text = Categories[i], bd = 0, font= "Arial", bg = colour_dark, fg = "white", height= 4, width = 10)
     btn.place(x = 0, y = i * height/len(Categories))
     i = i + 1
-
+'''
 sensors = ["Light", "Moisture", "Temperature"]
 
 for i in range(len(sensors)):
