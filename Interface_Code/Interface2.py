@@ -20,6 +20,7 @@ style.use('ggplot')
 fig = Figure(figsize=(4,4), dpi=100)
 ax1 = fig.add_subplot(1,1,1)
 
+
 def animate(i):
     graph_data = open('Sample.txt','r').read()
     lines = graph_data.split('\n')
@@ -72,7 +73,6 @@ class Interface:
         for i in range(len(sensors)):
             btn1 = btn = Button(window, text = sensors[i], bd = 0, font= "Arial", bg = colour_dark, fg = "white", height= 5, width = 18)
             btn1.place(x = (i+1)*(width-115)/len(sensors) - 100, y = 50) 
-
 
 
         
