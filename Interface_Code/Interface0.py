@@ -64,7 +64,7 @@ YPOS = 100
 text = str(width) + "x" + str(height) + "+" + str(XPOS) + "+" + str(YPOS)
 
 
-data = pd.read_csv(r'C:\Users\lizzi\DataLogger\Interface_Code\Database\Plant_data.csv')
+data = pd.read_csv(r'Database\Plant_data.csv')
 
 print(data)
 Categories = ["Cactus", "Tropical", "Alpine", "Bulbs", "Climbers", "Ferns"]
