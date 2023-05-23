@@ -8,6 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import seaborn as sb
 import pandas as pd
 from tkinter import ttk
+import serial.tools.list_ports
 
 colour_light = "palegreen3"
 colour_dark = "palegreen4"
@@ -177,7 +178,7 @@ n = tk.StringVar()
 
 com_combobox = ttk.Combobox(window, width = 20, textvariable = n)
 
-com_combobox['values'] = ["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9"]
+com_combobox['values'] = list(serial.tools.list_ports.comports())
 
 com_combobox.place(x= 280, y = 13)
 
