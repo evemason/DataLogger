@@ -37,7 +37,7 @@ def animate():
             x, y = line.split(',')
             xs.append(float(x))
             ys.append(float(y))
-    fig = Figure(figsize=(4, 4), dpi=100)
+    fig = Figure(figsize=(4, 3.8), dpi=100)
     ax1 = fig.add_subplot(1, 1, 1)
     ax1.plot(xs, ys)
 
@@ -46,7 +46,7 @@ def animate():
 
     bar1 = FigureCanvasTkAgg(fig, window)
     bar1.draw()
-    bar1.get_tk_widget().place(x=130, y=185)
+    bar1.get_tk_widget().place(x=130, y=210)
     window.after(100, animate)
 
 
@@ -114,8 +114,8 @@ def graph_label_update(type):
 
 # create the label for the graph which switches depending on which button is pressed
 
-graph_label = Text(window, bd=0, width=44, height=1, bg=colour_dark, fg="white", font="Arial")
-graph_label.place(x=129.5, y=165)
+graph_label = Text(window, bd=0, width=36, height=1, bg=colour_dark, fg="white", font="Arial")
+graph_label.place(x=129.5, y=185)
 
 # to create multiple buttons with different commands use a dictionary
 for i in range(len(Categories)):
@@ -149,7 +149,7 @@ for i in range(len(sensors)):
 
 # create a drop down list to select the port input
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")
-com_label.place(x = 100, y = 10)
+com_label.place(x = 120, y = 10)
 
 n = tk.StringVar()
 
@@ -157,7 +157,7 @@ com_combobox = ttk.Combobox(window, width = 20, textvariable = n)
 
 com_combobox['values'] = ["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9"]
 
-com_combobox.place(x= 220, y = 10)
+com_combobox.place(x= 280, y = 13)
 
 window.geometry(text)
 window.mainloop()
