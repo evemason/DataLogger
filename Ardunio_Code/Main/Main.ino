@@ -7,6 +7,7 @@
 extern void Temperature();
 extern void Light();
 extern void Moisture();
+extern void Average(int sensor);
 
 
 
@@ -16,18 +17,19 @@ void setup() {
   Serial.begin(9600);
   pinMode(Led, OUTPUT);
 
-  analogReference(INTERNAL);
+  //analogReference(INTERNAL);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   Temperature();
   Light();
-  //Moisture();
+  Average(light);
+  Moisture();
   //Serial.println(String(temp)+ "," + String(light) + "," +String(moisture_voltage));
 
-  //light_voltage = analogRead(light_pin);
-  //Serial.println(light_voltage);  
+  //temp_voltage = analogRead(temperature_pin);
+  //Serial.println(temp);  
   
-  Serial.println(String(temp) + "," + String(temp_voltage)+"," +String(temp_R));
+  //Serial.println(String(light_voltage) + "," + String(light_current)+  "," + String(light)+  "," + String(av));
 }

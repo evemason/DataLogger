@@ -10,11 +10,37 @@ void Temperature(){
 
 void Light(){
   light_voltage = analogRead(light_pin);
-  light_current = 1000000 * light_voltage/R_const_light;
-  light = exp(log(light_current/1000000)-0.24);
+  light_current = 1000000*1.1*light_voltage/(R_const_light*1023);
+  light = exp(log(light_current)-0.24);
 }
 
 void Moisture(){
   moisture_voltage = analogRead(moisture_pin);
+  
+  soilmoisturepercent = map(moisture_voltage, AirValue, WaterValue, 0, 100);
+  if(soilmoisturepercent >= 100)
+  {
+    Serial.println(moisture_voltage);
+    Serial.println("100 %");
+  }
+  else if(soilmoisturepercent <=0)
+  {
+    Serial.println(moisture_voltage);
+    Serial.println("0 %");
+  }
+  else if(soilmoisturepercent >0 && soilmoisturepercent < 100)
+  
+  {
+    Serial.println(moisture_voltage);
+    Serial.print(soilmoisturepercent);
+    Serial.println("%");
+}
 
+}
+
+void Average(int sensor){
+  average[0] = average[1];
+  average[1] = average[2];
+  average[2] = sensor;
+  av = (average[0]+average[1]+average[2])/lenght;
 }
