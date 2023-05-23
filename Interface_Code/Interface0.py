@@ -25,6 +25,7 @@ style.use('ggplot')
 
 bar1 = None
 
+# Create an animated graph that reads a csv file
 
 def animate():
     global bar1
@@ -145,6 +146,27 @@ for i in range(len(sensors)):
     sensor_button_dict[i] = tk.Button(window, text=sensors[i], bd=0, font="Arial", bg=colour_dark, fg="white", height=5,
                                       width=18, command=function1)
     sensor_button_dict[i].place(x=(i + 1) * (width - 115) / len(sensors) - 100, y=50)
+
+
+s = False
+# function for switch 
+#def swi():
+ #   switch("OFF")
+
+
+def swi():
+    global s
+    if s:
+        s = False
+        switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
+    
+    else:
+        s = True
+        switch.configure(text = "ON", bg = "palegreen", fg="white")
+# Create On off button
+switch = tk.Button(window, text="OFF", bd=0, font = "Arial", bg="lightgrey", fg="black", height = 1, width = 10, command=swi)
+switch.place(x=450, y=5)
+
 
 
 # create a drop down list to select the port input
