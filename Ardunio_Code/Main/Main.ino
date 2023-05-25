@@ -8,6 +8,7 @@ extern void Temperature();
 extern void Light();
 extern void Moisture();
 extern void Average(int sensor);
+extern void info();
 
 char incomingByte; // variable to store the serial data in 
 
@@ -16,7 +17,6 @@ void setup() {
   // speed at which arduino passes data to the computor
   Serial.begin(9600);
   pinMode(Led, OUTPUT);
-
   analogReference(INTERNAL);
 }
 
@@ -41,10 +41,38 @@ void loop() {
     }
 
   if (incomingByte == 'T'){
-    Serial.println("temp" + String(av));
+    if (state != 0){
+      state = 0
+      analogReference(INTERNAL);
     }
+    Temperature();
+    Average(temp);
+    Serial.println(String(av));
+  }
+  if (incomingByte == 'L'){
+    if (state != 0){
+      state = 0
+      analogReference(INTERNAL);
+    }
+    Light();
+    Average(light);
+    Serial.println(String(av));
+  }
+  if (incomingByte == 'M'){
+    if (state != 1){
+      state = 1
+      analogReference(DEFAULT);
+    }
+    Moisture();
+    Average(soilmoisturepercent);
+    Serial.println(String(av));
+  }
+  if (incomingByte == 'X'){}
 
-  Serial.println(av);
-    
-  
+  if (incomingByte == 'I'){
+    info()
+  }
+  else{
+    Serial.println("lost data")
+  }
 }

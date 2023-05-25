@@ -20,20 +20,23 @@ void Moisture(){
   soilmoisturepercent = map(moisture_voltage, AirValue, WaterValue, 0, 100);
   if(soilmoisturepercent >= 100)
   {
-    Serial.println(moisture_voltage);
-    Serial.println("100 %");
+    //Serial.println(moisture_voltage);
+    //Serial.println("100 %");
+    moisture = 100;
   }
   else if(soilmoisturepercent <=0)
   {
-    Serial.println(moisture_voltage);
-    Serial.println("0 %");
+    //Serial.println(moisture_voltage);
+    //Serial.println("0 %");
+    moisture = 0;
   }
   else if(soilmoisturepercent >0 && soilmoisturepercent < 100)
   
   {
-    Serial.println(moisture_voltage);
-    Serial.print(soilmoisturepercent);
-    Serial.println("%");
+    //Serial.println(moisture_voltage);
+    //Serial.print(soilmoisturepercent);
+    //Serial.println("%");
+    moisture = soilmoisturepercent;
 }
 
 }
@@ -43,4 +46,25 @@ void Average(int sensor){
   average[1] = average[2];
   average[2] = sensor;
   av = (average[0]+average[1]+average[2])/lenght;
+}
+
+void info() {
+    static byte ndx = 0;
+    char endMarker = '\n';
+    
+    while (incomingByte != 'L') {
+        incomingByte = Serial.read();
+
+        if (imcomingByte != endMarker) {
+            receivedChars[ndx] = imcomingByte;
+            ndx++;
+            if (ndx >= numChars) {
+                ndx = numChars - 1;
+            }
+        }
+        else {
+            receivedChars[ndx] = '\0'; // terminate the string
+            ndx = 0;
+        }
+    }
 }
