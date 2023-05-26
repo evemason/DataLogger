@@ -155,6 +155,7 @@ sensor_button_dict = {}
 
 for i in range(len(sensors)):
     def function1(x=sensors[i]):
+        sensor_data.clear()
         return graph_update(x)
 
 
@@ -176,6 +177,7 @@ def swi():
         ser.write(bytes('X', 'UTF-8'))
         global reading_variable
         reading_variable = False
+        sensor_data.clear()
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
     
     else: # off going to on 
