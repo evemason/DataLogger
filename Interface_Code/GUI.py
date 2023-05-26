@@ -174,6 +174,7 @@ def swi():
     global s
     if s: # On going to off
         s = False
+        print("sending X")
         ser.write(bytes('X', 'UTF-8'))
         global reading_variable
         reading_variable = False
@@ -210,7 +211,7 @@ def collect_data():
 
 ser = serial.Serial("COM4", 9600)
 
-
+window.after(1000, collect_data)
 
 # create a drop down list to select the port input
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")
