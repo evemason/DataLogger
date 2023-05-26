@@ -12,6 +12,7 @@ import time
 import tkinter as tk
 import numpy as np
 from threading import Thread
+import queue
 
 # Global variables
 s = False
@@ -31,12 +32,16 @@ new_data = 0
 colour_light = "palegreen3"
 colour_dark = "palegreen4"
 
-Categories = ["Cactus", "Tropical", "Alpine", "Bulbs", "Climbers", "Ferns"]
+Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
 
 window = Tk()
 
 window.title("Plant Care System")
 window.configure(bg=colour_light)
+
+# create queues for the sensor values
+q = queue.Queue()
+
 
 '''style.use('ggplot')
 bar1 = None
@@ -89,7 +94,7 @@ text = str(width) + "x" + str(height) + "+" + str(XPOS) + "+" + str(YPOS)
 
 data = pd.read_csv(r'Database\Plant_data.csv')
 
-print(data)
+#print(data)
 Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
 
 water_high = data['water_high'].tolist()
@@ -130,7 +135,7 @@ button_dict = {}
 
 
 # create a function which is called when a sensor button is clicked
-def graph_update(type, current_plant):
+def graph_update(type):
     global s
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     global high, low
@@ -165,6 +170,10 @@ graph_label.place(x=129.5, y=185)
 # to create multiple buttons with different commands use a dictionary
 for i in range(len(Categories)):
     def function(x=Categories[i]):
+        xs.clear()
+        ys.clear()
+        global counter
+        counter = 0
         return entry_update(x)
 
 
@@ -206,6 +215,7 @@ def swi():
         reading_variable = False
         sensor_data.clear()
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
+        graph_label.delete("1.0", tk.END)
     
     else: # off going to on 
         s = True
@@ -224,21 +234,52 @@ def collect_data():
 
         if (ser.in_waiting > 0):
             getData = ser.readline()
-            dataString = getData.decode('utf-8')
-            print(dataString)
-            value_string = int(dataString)
-            print(value_string)
-            sensor_data.append(value_string)
+            dataString = int(getData.decode('utf-8'))
+            sensor_data.append(dataString)
             print(sensor_data)
+            q.put(dataString)
 
     window.after(100, collect_data)
 
+Thread1 = Thread(target= collect_data)
+Thread1.start()
 
 style.use('ggplot')
 bar1 = None
 
-# Create an animated graph
+xs = []
+ys = []
+global counter
+counter = 0
+def animate():
+    global bar1
+    global counter
 
+    if (q.qsize() >0):
+        item = q.get()
+        ys.append(item)
+        print("appending data")
+        print(ys)
+        counter = counter + 1
+        xs.append(counter)
+        q.task_done()
+
+    fig = Figure(figsize=(4,3.8), dpi = 100)
+    ax1 = fig.add_subplot(1,1,1)
+    ax1.plot(xs, ys)
+    if bar1:
+        bar1.get_tk_widget().pack_forget()
+
+    bar1 = FigureCanvasTkAgg(fig, window)
+    bar1.draw()
+    bar1.get_tk_widget().place(x=130, y=210)
+    window.after(100, animate)
+
+Thread2 = Thread(target = animate)
+Thread2.start()
+
+# Create an animated graph
+'''
 def animate(data):
     global bar1
     global high, low
@@ -269,10 +310,12 @@ def animate(data):
 
 
 window.after(1, animate(sensor_data))
+'''
 
+q.join()
 ser = serial.Serial("COM4", 9600)
 
-window.after(1000, collect_data)
+#window.after(1000, collect_data)
 
 # create a drop down list to select the port input
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")
