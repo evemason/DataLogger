@@ -10,6 +10,7 @@ import serial.tools.list_ports
 import serial
 import time
 import tkinter as tk
+import numpy as np
 from threading import Thread
 
 # Global variables
@@ -196,12 +197,14 @@ sensor_data = []
 def collect_data():
     global reading_variable
     if (reading_variable == True):
-        print("hello")
+
         if (ser.in_waiting > 0):
             getData = ser.readline()
             dataString = getData.decode('utf-8')
-            #print(dataString)
-            sensor_data.append(dataString)
+            print(dataString)
+            value_string = int(dataString)
+            print(value_string)
+            sensor_data.append(value_string)
             print(sensor_data)
 
     window.after(100, collect_data)
