@@ -15,7 +15,7 @@ extern int R_const_temp = 1000;
 
 // processing constants
 const int lenght = 3;
-extern int light_voltage = 0, temp_voltage = 0, temp_R = 0, moisture_voltage = 0, temp = 0, det = 0, light = 0, light_current = 0, av =0, moisture;
+extern int light_voltage = 0, temp_voltage = 0, temp_R = 0, moisture_voltage = 0, temp = 0, det = 0, light = 0, light_current = 0, av =0, moisture=0;
 extern int average[lenght] = {0,0,0};
 extern int soilmoisturepercent=0;
 
@@ -23,5 +23,6 @@ extern int soilmoisturepercent=0;
 extern int state = 0;
 
 // Data array
-extern const byte numChars = 32;
-extern char receivedChars[numChars]; 
+extern char incomingByte='X'; // variable to store incoming data in
+extern const byte numChars = 9;
+extern char receivedChars[numChars]= {'X','X','X','X','X','X','X','X','X'};

@@ -10,8 +10,6 @@ extern void Moisture();
 extern void Average(int sensor);
 extern void info();
 
-char incomingByte; // variable to store the serial data in 
-
 void setup() {
   // put your setup code here, to run once:
   // speed at which arduino passes data to the computor
@@ -42,7 +40,7 @@ void loop() {
 
   if (incomingByte == 'T'){
     if (state != 0){
-      state = 0
+      state = 0;
       analogReference(INTERNAL);
     }
     Temperature();
@@ -51,7 +49,7 @@ void loop() {
   }
   if (incomingByte == 'L'){
     if (state != 0){
-      state = 0
+      state = 0;
       analogReference(INTERNAL);
     }
     Light();
@@ -60,7 +58,7 @@ void loop() {
   }
   if (incomingByte == 'M'){
     if (state != 1){
-      state = 1
+      state = 1;
       analogReference(DEFAULT);
     }
     Moisture();
@@ -70,9 +68,9 @@ void loop() {
   if (incomingByte == 'X'){}
 
   if (incomingByte == 'I'){
-    info()
+    info();
   }
   else{
-    Serial.println("lost data")
+    Serial.println("lost data");
   }
 }

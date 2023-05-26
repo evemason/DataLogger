@@ -55,8 +55,8 @@ void info() {
     while (incomingByte != 'L') {
         incomingByte = Serial.read();
 
-        if (imcomingByte != endMarker) {
-            receivedChars[ndx] = imcomingByte;
+        if (incomingByte != endMarker) {
+            receivedChars[ndx] = incomingByte;
             ndx++;
             if (ndx >= numChars) {
                 ndx = numChars - 1;
