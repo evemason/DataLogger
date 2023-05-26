@@ -33,9 +33,13 @@ void loop() {
   //Serial.println(av);
   //delay(1000); //collects data every second
 
+  //Serial.println(String(av));
+
   if (Serial.available()>0){
     // read the imcoming byte 
     incomingByte = Serial.read();
+    //Serial.println(incomingByte);
+    
     }
 
   if (incomingByte == 'T'){
@@ -45,7 +49,11 @@ void loop() {
     }
     Temperature();
     Average(temp);
+    digitalWrite(led_temp, HIGH);
+    digitalWrite(led_moisture, LOW);
+    digitalWrite(led_light, LOW);
     Serial.println(String(av));
+    delay(500);
   }
   if (incomingByte == 'L'){
     if (state != 0){
@@ -54,6 +62,9 @@ void loop() {
     }
     Light();
     Average(light);
+    digitalWrite(led_light, HIGH);
+    digitalWrite(led_moisture, LOW);
+    digitalWrite(led_temp, LOW);
     Serial.println(String(av));
   }
   if (incomingByte == 'M'){
@@ -63,14 +74,20 @@ void loop() {
     }
     Moisture();
     Average(soilmoisturepercent);
+    digitalWrite(led_moisture, HIGH);
+    digitalWrite(led_light, LOW);
+    digitalWrite(led_temp, LOW);
     Serial.println(String(av));
   }
-  if (incomingByte == 'X'){}
+  if (incomingByte == 'X'){
+    digitalWrite(led_temp, LOW);
+    digitalWrite(led_light, LOW);
+    digitalWrite(led_moisture, LOW);
+    }
 
   if (incomingByte == 'I'){
     info();
   }
-  else{
-    Serial.println("lost data");
-  }
+  
+
 }
