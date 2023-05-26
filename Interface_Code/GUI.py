@@ -16,6 +16,17 @@ from threading import Thread
 # Global variables
 s = False
 reading_variable = False
+gwater_level_high = 0
+gwater_level_low = 0
+gtemp_level_high = 0
+gtemp_level_low = 0
+glight_level_high = 0
+glight_level_low = 0
+high = 0
+low = 0
+sensor_data = []
+new_data = 0 
+
 
 colour_light = "palegreen3"
 colour_dark = "palegreen4"
@@ -27,28 +38,30 @@ window = Tk()
 window.title("Plant Care System")
 window.configure(bg=colour_light)
 
-style.use('ggplot')
-# fig = Figure(figsize=(4,4), dpi=100)
-# ax1 = fig.add_subplot(1,1,1)
-
+'''style.use('ggplot')
 bar1 = None
 
-# Create an animated graph that reads a csv file
+# Create an animated graph
 
-def animate():
+def animate(data):
     global bar1
-    graph_data = open('Sample.txt', 'r').read()
-    lines = graph_data.split('\n')
+    global high, low
+    h = np.empty(len(data))
+    h.fill(high)
+    l = np.empty(len(data))
+    l.fill(low)
     xs = []
     ys = []
-    for line in lines:
-        if len(line) > 1:
-            x, y = line.split(',')
-            xs.append(float(x))
-            ys.append(float(y))
+    for points in data:
+        if len(data) > new_data:
+            xs.append(new_data)
+            ys.append(data)
+            new_data = new_data + 1
     fig = Figure(figsize=(4, 3.8), dpi=100)
     ax1 = fig.add_subplot(1, 1, 1)
-    ax1.plot(xs, ys)
+    ax1.plot(xs, data)
+    ax1.plot(xs,l)
+    ax1.plot(xs,h)
 
     if bar1:
         bar1.get_tk_widget().pack_forget()
@@ -56,15 +69,15 @@ def animate():
     bar1 = FigureCanvasTkAgg(fig, window)
     bar1.draw()
     bar1.get_tk_widget().place(x=130, y=210)
-    window.after(100, animate)
+    window.after(100, animate(data))
 
 
-window.after(1, animate)
+window.after(1, animate(sensor_data))
 
 # ani = animation.FuncAnimation(fig, animate, interval=1000)
 
 # bar1 = FigureCanvasTkAgg(fig, window)
-# bar1.get_tk_widget().place(x=130, y=185)
+# bar1.get_tk_widget().place(x=130, y=185)'''
 
 
 width = 800
@@ -77,7 +90,7 @@ text = str(width) + "x" + str(height) + "+" + str(XPOS) + "+" + str(YPOS)
 data = pd.read_csv(r'Database\Plant_data.csv')
 
 print(data)
-Categories = ["Cactus", "Tropical", "Alpine", "Bulbs", "Climbers", "Ferns"]
+Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
 
 water_high = data['water_high'].tolist()
 water_low = data['water_low'].tolist()
@@ -100,6 +113,8 @@ def extract_data(plant_name):
 
 
 def entry_update(name):
+    global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
+    gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low = extract_data(name)
     text = extract_data(name)
     entry.delete("1.0", tk.END)
     entry.insert("1.0", text)
@@ -114,22 +129,32 @@ recommendations.place(x=550, y=200)
 button_dict = {}
 
 
-# create a function which updates the label of the graph
-def graph_update(type):
+# create a function which is called when a sensor button is clicked
+def graph_update(type, current_plant):
     global s
+    global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
+    global high, low
     text = "{} graph".format(type)
     if type == 'Light':
         ser.write(bytes('L', 'UTF-8'))
+        high = glight_level_high
+        low = glight_level_low
     if type == 'Moisture':
         ser.write(bytes('M', 'UTF-8'))
+        high = gwater_level_high
+        low = gwater_level_low
     if type == 'Temperature':
         ser.write(bytes('T', 'UTF-8'))
+        high = gtemp_level_high
+        low = gtemp_level_low
     if s == False:
         swi()
     global reading_variable
     reading_variable = True
     graph_label.delete("1.0", tk.END)
     graph_label.insert("1.0", text)
+
+
 
 
 # create the label for the graph which switches depending on which button is pressed
@@ -193,7 +218,6 @@ switch.place(x=450, y=5)
 
 
 
-sensor_data = []
 def collect_data():
     global reading_variable
     if (reading_variable == True):
@@ -210,7 +234,41 @@ def collect_data():
     window.after(100, collect_data)
 
 
+style.use('ggplot')
+bar1 = None
 
+# Create an animated graph
+
+def animate(data):
+    global bar1
+    global high, low
+    h = np.empty(len(data))
+    h.fill(high)
+    l = np.empty(len(data))
+    l.fill(low)
+    xs = []
+    ys = []
+    for points in data:
+        if len(data) > new_data:
+            xs.append(new_data)
+            ys.append(data)
+            new_data = new_data + 1
+    fig = Figure(figsize=(4, 3.8), dpi=100)
+    ax1 = fig.add_subplot(1, 1, 1)
+    ax1.plot(xs, data)
+    ax1.plot(xs,l)
+    ax1.plot(xs,h)
+
+    if bar1:
+        bar1.get_tk_widget().pack_forget()
+
+    bar1 = FigureCanvasTkAgg(fig, window)
+    bar1.draw()
+    bar1.get_tk_widget().place(x=130, y=210)
+    window.after(100, animate(data))
+
+
+window.after(1, animate(sensor_data))
 
 ser = serial.Serial("COM4", 9600)
 
