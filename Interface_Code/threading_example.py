@@ -56,12 +56,13 @@ def collect_data():
 
     window.after(100, collect_data)
 
-
+data = []
 def printing_data():
     while True:
         item = q.get()
+        data.append(item)
         display_box.delete("1.0", tk.END)
-        display_box.insert("1.0", item)
+        display_box.insert("1.0", data)
         print(item)
         q.task_done()
 

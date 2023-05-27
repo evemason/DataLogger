@@ -251,9 +251,20 @@ xs = []
 ys = []
 global counter
 counter = 0
+
+h = np.empty(len(data))
+h.fill(high)
+l = np.empty(len(data))
+l.fill(low)
+
+h = []
+l = []
+
 def animate():
     global bar1
     global counter
+    global high, low
+
 
     if (q.qsize() >0):
         item = q.get()
@@ -263,10 +274,15 @@ def animate():
         counter = counter + 1
         xs.append(counter)
         q.task_done()
+        h.append(high)
+        l.append(low)
+
 
     fig = Figure(figsize=(4,3.8), dpi = 100)
     ax1 = fig.add_subplot(1,1,1)
     ax1.plot(xs, ys)
+    ax1.plot(xs, l)
+    ax1.plot(xs, h)
     if bar1:
         bar1.get_tk_widget().pack_forget()
 
