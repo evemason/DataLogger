@@ -29,3 +29,4 @@ extern int state = 0;
 extern char incomingByte='X'; // variable to store incoming data in
 extern const byte numChars = 9;
 extern char receivedChars[numChars]= {'X','X','X','X','X','X','X','X','X'};
+extern int n = 0;

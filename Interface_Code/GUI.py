@@ -14,6 +14,7 @@ import numpy as np
 from threading import Thread
 import queue
 from Databaseclass import Database
+import gc ## this might solve the problem but i am not sure how. 
 
 # Global variables
 s = False
@@ -121,7 +122,7 @@ def extract_data(plant_name):
 def entry_update(name):
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low = Database.extract_all(name)
-    text = Database.extract_all(name)
+    text = extract_data(name)
     entry.delete("1.0", tk.END)
     entry.insert("1.0", text)
 

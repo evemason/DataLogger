@@ -20,9 +20,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Temperature();
+  //Temperature();
   //Light();
-  Average(temp);
+  //Average(temp);
   //Moisture();
   //Serial.println(String(temp)+ "," + String(light) + "," +String(moisture_voltage));
 
@@ -39,7 +39,7 @@ void loop() {
     // read the imcoming byte 
     incomingByte = Serial.read();
     //Serial.println(incomingByte);
-    
+    n = 0;
     }
 
   if (incomingByte == 'T'){
@@ -52,7 +52,12 @@ void loop() {
     digitalWrite(led_temp, HIGH);
     digitalWrite(led_moisture, LOW);
     digitalWrite(led_light, LOW);
-    Serial.println(String(av));
+    if (n<3){
+      Serial.println(String(temp));
+    }
+    else{
+      Serial.println(String(av));
+    }
     delay(500);
   }
   if (incomingByte == 'L'){
@@ -65,7 +70,12 @@ void loop() {
     digitalWrite(led_light, HIGH);
     digitalWrite(led_moisture, LOW);
     digitalWrite(led_temp, LOW);
-    Serial.println(String(av));
+    if (n<3){
+      Serial.println(String(light));
+    }
+    else{
+      Serial.println(String(av));
+    }
   }
   if (incomingByte == 'M'){
     if (state != 1){
@@ -77,7 +87,12 @@ void loop() {
     digitalWrite(led_moisture, HIGH);
     digitalWrite(led_light, LOW);
     digitalWrite(led_temp, LOW);
-    Serial.println(String(av));
+    if (n<3){
+      Serial.println(String(moisture));
+    }
+    else{
+      Serial.println(String(av));
+    }
   }
   if (incomingByte == 'X'){
     digitalWrite(led_temp, LOW);
