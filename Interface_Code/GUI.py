@@ -13,6 +13,7 @@ import tkinter as tk
 import numpy as np
 from threading import Thread
 import queue
+from Databaseclass import Database
 
 # Global variables
 s = False
@@ -96,7 +97,7 @@ data = pd.read_csv(r'Database\Plant_data.csv')
 
 #print(data)
 Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
-
+# I don't think we need this any more
 water_high = data['water_high'].tolist()
 water_low = data['water_low'].tolist()
 temp_high = data['temp_high'].tolist()
@@ -104,7 +105,7 @@ temp_low = data['temp_low'].tolist()
 light_high = data['light_high'].tolist()
 light_low = data['light_low'].tolist()
 
-
+# I also think we don't need this 
 def extract_data(plant_name):
     index = Categories.index(plant_name)
     water_level_high = water_high[index]
@@ -119,8 +120,8 @@ def extract_data(plant_name):
 
 def entry_update(name):
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
-    gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low = extract_data(name)
-    text = extract_data(name)
+    gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low = Database.extract_all(name)
+    text = Database.extract_all(name)
     entry.delete("1.0", tk.END)
     entry.insert("1.0", text)
 
