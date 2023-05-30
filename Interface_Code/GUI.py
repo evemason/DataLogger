@@ -94,18 +94,21 @@ def graph_update(type):
     text = "{} graph".format(type)
 
     if type == 'Light':
+        ser.flush()
         ser.write(bytes('L', 'UTF-8'))
         sensor_type = 'Light'
         high = glight_level_high
         low = glight_level_low
     if type == 'Moisture':
+        ser.flush()
         ser.write(bytes('M', 'UTF-8'))
         sensor_type = 'Moisture'
         high = gwater_level_high
         low = gwater_level_low
     if type == 'Temperature':
+        ser.flush()
         ser.write(bytes('T', 'UTF-8'))
-        sensor_type = 'Tempature'
+        sensor_type = 'Temperature'
         high = gtemp_level_high
         low = gtemp_level_low
     if s == False:
@@ -150,7 +153,11 @@ sensor_button_dict = {}
 
 for i in range(len(sensors)):
     def function1(x=sensors[i]):
-        sensor_data.clear()
+        q.queue.clear()
+        xs.clear()
+        ys.clear()
+        global counter
+        counter = 0
         return graph_update(x)
 
 
@@ -178,14 +185,14 @@ def swi():
         global reading_variable
         reading_variable = False
         #sensor_data.clear()
-        xs.clear()
-        ys.clear()
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
         graph_label.delete("1.0", tk.END)
 
     
-    else: # off going to on 
+    else: # off going to on 3
         s = True
+        xs.clear()
+        ys.clear()
         switch.configure(text = "ON", bg = "palegreen", fg="white")
 
 # Create On off button
@@ -208,8 +215,6 @@ def collect_data():
 
             getData = ser.readline()
             dataString = int(getData.decode('utf-8'))
-            sensor_data.append(dataString)
-            print(sensor_data)
             q.put(dataString)
 
 
@@ -226,13 +231,6 @@ ys = []
 global counter
 counter = 0
 
-h = np.empty(len(data))
-h.fill(high)
-l = np.empty(len(data))
-l.fill(low)
-
-h = []
-l = []
 
 def animate():
     global bar1
@@ -248,15 +246,14 @@ def animate():
         counter = counter + 1
         xs.append(counter)
         q.task_done()
-        h.append(high)
-        l.append(low)
+
 
 
     fig = Figure(figsize=(4,3.8), dpi = 100)
     ax1 = fig.add_subplot(1,1,1)
+    ax1.axhline(y=high, color='r', linestyle='--')
+    ax1.axhline(y=low, color='r', linestyle='--')
     ax1.plot(xs, ys)
-    ax1.plot(xs, l)
-    ax1.plot(xs, h)
     if bar1:
         bar1.get_tk_widget().pack_forget()
 
