@@ -10,8 +10,9 @@ void Temperature(){
 
 void Light(){
   light_voltage = analogRead(light_pin);
-  light_current = 1000000*5*light_voltage/(R_const_light*1023);
-  light = exp(log(light_current)-0.24);
+  //light_current = 1000000*5*light_voltage/(R_const_light*1023);
+  //light = exp(log(light_current)-0.24);
+  light = 1023 - light_voltage;
 }
 
 void Moisture(){
@@ -46,25 +47,4 @@ void Average(unsigned long sensor){
   average[1] = average[2];
   average[2] = sensor;
   av = (average[0]+average[1]+average[2])/lenght;
-}
-
-void info() {
-    static byte ndx = 0;
-    char endMarker = '\n';
-    
-    while (incomingByte != 'L') {
-        incomingByte = Serial.read();
-
-        if (incomingByte != endMarker) {
-            receivedChars[ndx] = incomingByte;
-            ndx++;
-            if (ndx >= numChars) {
-                ndx = numChars - 1;
-            }
-        }
-        else {
-            receivedChars[ndx] = '\0'; // terminate the string
-            ndx = 0;
-        }
-    }
 }

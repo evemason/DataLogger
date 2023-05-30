@@ -64,6 +64,16 @@ def entry_update(name):
     if sensor_type == 'Light':
         high = glight_level_high
         low = glight_level_low
+        levels = str(high) + "a" + str(low)
+        levels_string = str(levels)
+        bytes_high = high.to_bytes(2, byteorder = 'big') #not used at the moment but could be useful to send the data
+        bytes_low = low.to_bytes(2, byteorder = 'big')
+        ser.write(bytes(str(high), 'utf-8'))
+        ser.write(bytes('a', 'utf-8'))
+        ser.write(bytes(str(low), 'utf-8'))
+        #ser.write(bytes_high)
+        #ser.write(bytes_low)
+
     if sensor_type == 'Temperature':
         high = gtemp_level_high
         low = gtemp_level_low
@@ -144,6 +154,8 @@ for i in range(len(Categories)):
         q.unfinished_tasks = 0
         xs.clear()
         ys.clear()
+        ser.write(bytes('I', 'utf-8'))
+        #sendings the information light levels in entry_update
         global counter
         counter = 0
         return entry_update(x)
@@ -229,7 +241,7 @@ def collect_data():
     global reading_variable
     print("thread started")
     while (reading_variable == True):
-        print("collecting data")
+        #print("collecting data")
         if (s == False):
             break
         if (ser.in_waiting > 0):

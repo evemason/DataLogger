@@ -7,6 +7,8 @@ extern const int WaterValue = 310;  //you need to replace this value with Value_
 extern const int led_light = 2;
 extern const int led_moisture = 4;
 extern const int led_temp = 3;
+extern const int led_feedback = 7;
+extern const int feedback_pin = 8;
 
 
 // Light output 
@@ -30,3 +32,14 @@ extern char incomingByte='X'; // variable to store incoming data in
 extern const byte numChars = 9;
 extern char receivedChars[numChars]= {'X','X','X','X','X','X','X','X','X'};
 extern int n = 0;
+
+//seperating high and low 
+extern const byte numhigh = 2;
+extern char recieved_high[numhigh];
+extern const byte numlow = 2;
+extern char recieved_low[numlow];
+
+int low = 0;
+int high = 0;
+
+extern char x;

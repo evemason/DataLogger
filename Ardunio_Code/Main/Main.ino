@@ -9,6 +9,9 @@ extern void Light();
 extern void Moisture();
 extern void Average(int sensor);
 extern void info();
+extern void high_value();
+extern void low_value();
+extern void feedback(int value);
 
 void setup() {
   // put your setup code here, to run once:
@@ -108,11 +111,20 @@ void loop() {
     digitalWrite(led_temp, LOW);
     digitalWrite(led_light, LOW);
     digitalWrite(led_moisture, LOW);
+    digitalWrite(led_feedback, LOW);
+    digitalWrite(feedback_pin, LOW);
     }
 
   if (incomingByte == 'I'){
-    info();
+    digitalWrite(led_feedback, HIGH);
+    //digitalWrite(feedback_pin, HIGH);
+    //info();
+    high_value();
   }
-  
-
+  if (incomingByte == 'a'){
+    digitalWrite(led_feedback,LOW);
+    low_value();
+  }
+  Light();
+  feedback(light);
 }
