@@ -10,7 +10,7 @@ void Temperature(){
 
 void Light(){
   light_voltage = analogRead(light_pin);
-  light_current = 1000000*1.1*light_voltage/(R_const_light*1023);
+  light_current = 1000000*5*light_voltage/(R_const_light*1023);
   light = exp(log(light_current)-0.24);
 }
 
@@ -41,7 +41,7 @@ void Moisture(){
 
 }
 
-void Average(int sensor){
+void Average(unsigned long sensor){
   average[0] = average[1];
   average[1] = average[2];
   average[2] = sensor;

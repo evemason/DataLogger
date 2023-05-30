@@ -14,6 +14,7 @@ import numpy as np
 from threading import Thread
 import queue
 from Databaseclass import Database
+
 import gc ## this might solve the problem but i am not sure how. 
 
 # Global variables
@@ -30,7 +31,7 @@ low = 0
 sensor_data = []
 new_data = 0 
 sensor_type = 'off'
-
+#Thread1 = Thread()
 
 colour_light = "palegreen3"
 colour_dark = "palegreen4"
@@ -53,9 +54,6 @@ YPOS = 100
 
 text = str(width) + "x" + str(height) + "+" + str(XPOS) + "+" + str(YPOS)
 
-data = pd.read_csv(r'Database\Plant_data.csv')
-
-#print(data)
 Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
 
 
@@ -91,36 +89,45 @@ def graph_update(type):
     global s
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     global high, low, sensor_type
-    text = "{} graph".format(type)
 
+    text = "{} graph".format(type)
+    print("sensor button pressed")
+
+    global reading_variable
+    reading_variable = True
+
+    if s == False:
+        swi()
     if type == 'Light':
-        ser.flush()
+
+        print("sending L")
         ser.write(bytes('L', 'UTF-8'))
         sensor_type = 'Light'
         high = glight_level_high
         low = glight_level_low
     if type == 'Moisture':
-        ser.flush()
+
+        print("sending M")
         ser.write(bytes('M', 'UTF-8'))
         sensor_type = 'Moisture'
         high = gwater_level_high
         low = gwater_level_low
     if type == 'Temperature':
-        ser.flush()
+
+        print("sending T")
         ser.write(bytes('T', 'UTF-8'))
         sensor_type = 'Temperature'
         high = gtemp_level_high
         low = gtemp_level_low
-    if s == False:
-        swi()
-    global reading_variable
-    reading_variable = True
 
-    Thread1 = Thread(target=collect_data, daemon=True)
-    Thread1.start()
+
+
+    #Thread1 = Thread(target=collect_data, daemon=True)
+    #Thread1.start()
 
     graph_label.delete("1.0", tk.END)
     graph_label.insert("1.0", text)
+
 
 
 
@@ -133,6 +140,8 @@ graph_label.place(x=129.5, y=185)
 # to create multiple buttons with different commands use a dictionary
 for i in range(len(Categories)):
     def function(x=Categories[i]):
+        q.queue.clear()
+        q.unfinished_tasks = 0
         xs.clear()
         ys.clear()
         global counter
@@ -153,7 +162,10 @@ sensor_button_dict = {}
 
 for i in range(len(sensors)):
     def function1(x=sensors[i]):
+
         q.queue.clear()
+        #q.all_tasks_done.notify_all()
+        q.unfinished_tasks = 0
         xs.clear()
         ys.clear()
         global counter
@@ -174,11 +186,22 @@ for i in range(len(sensors)):
 # Create command for on off switch
 def swi():
     global s
-    if s: # On going to off
-        with q.mutex:
-            q.queue.clear()
-            q.all_tasks_done.notify_all()
-            q.unfinished_tasks = 0
+    #global Thread1
+    if s == False: # off going to on 3
+        print("on")
+        s = True
+        Thread1 = Thread(target=collect_data, daemon=True)
+        Thread1.start()
+        #s = True
+        xs.clear()
+        ys.clear()
+        switch.configure(text = "ON", bg = "palegreen", fg="white")
+
+    else: # On going to off
+
+        q.queue.clear()
+        #q.all_tasks_done.notify_all()
+        q.unfinished_tasks = 0
         s = False
         print("sending X")
         ser.write(bytes('X', 'UTF-8'))
@@ -187,13 +210,13 @@ def swi():
         #sensor_data.clear()
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
         graph_label.delete("1.0", tk.END)
+        #print(Thread1.is_alive())
+        #if Thread1.is_alive():
+        #    print("kill")
+        #    Thread1.join()
 
-    
-    else: # off going to on 3
-        s = True
-        xs.clear()
-        ys.clear()
-        switch.configure(text = "ON", bg = "palegreen", fg="white")
+
+
 
 # Create On off button
 switch = tk.Button(window, text="OFF", bd=0, font = "Arial", bg="lightgrey", fg="black", height = 1, width = 10, command=swi)
@@ -204,21 +227,20 @@ switch.place(x=450, y=5)
 
 def collect_data():
     global reading_variable
-    print(reading_variable)
+    print("thread started")
     while (reading_variable == True):
-        print("hello")
-        print(s)
+        print("collecting data")
         if (s == False):
             break
-        print(ser.in_waiting)
         if (ser.in_waiting > 0):
 
             getData = ser.readline()
-            dataString = int(getData.decode('utf-8'))
+            data = getData.decode('utf-8')
+            #print(data)
+            dataString = int(data)
             q.put(dataString)
 
 
-    #window.after(100, collect_data)
 
 
 
@@ -240,14 +262,18 @@ def animate():
 
     if (q.qsize() >0):
         item = q.get()
+        #print("from queue is: ", item)
         ys.append(item)
-        print("appending data")
-        print(ys)
+        xs.append(counter - 2)
+        if (counter<2):
+            ys.clear()
+            xs.clear()
         counter = counter + 1
-        xs.append(counter)
+
+
         q.task_done()
 
-
+    #print(ys)
 
     fig = Figure(figsize=(4,3.8), dpi = 100)
     ax1 = fig.add_subplot(1,1,1)
@@ -260,30 +286,43 @@ def animate():
     bar1 = FigureCanvasTkAgg(fig, window)
     bar1.draw()
     bar1.get_tk_widget().place(x=130, y=210)
-    window.after(100, animate)
+    window.after(50, animate)
 
-#Thread2 = Thread(target = animate)
-#Thread2.start()
+
 
 # Create an animated graph
-q.join()
-ser = serial.Serial("COM4", 9600)
+#q.join()
+
 
 #window.after(1000, collect_data)
 
-window.after(100, animate)
+window.after(50, animate)
 
 # create a drop down list to select the port input
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")
 com_label.place(x = 120, y = 10)
 
-n = tk.StringVar()
 
-com_combobox = ttk.Combobox(window, width = 20, textvariable = n)
+def com_select():
+    global clicked_com
+    ports = serial.tools.list_ports.comports()
+    coms = [com[0] for com in ports]
+    #coms.insert(0, "COM4")
 
-com_combobox['values'] = list(serial.tools.list_ports.comports())
 
-com_combobox.place(x= 280, y = 13)
+    clicked_com = StringVar()
+    clicked_com.set(coms[0])
+    drop_coms = OptionMenu(window, clicked_com, *coms)
+    drop_coms.config(width = 20)
+    drop_coms.place(x = 280, y =13)
+
+
+com_select()
+
+com_port = clicked_com.get()
+print(com_port)
+
+ser = serial.Serial(com_port, 9600)
 
 window.geometry(text)
 window.mainloop()
