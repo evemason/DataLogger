@@ -19,16 +19,17 @@ import gc ## this might solve the problem but i am not sure how.
 # Global variables
 s = False
 reading_variable = False
-gwater_level_high = 0
-gwater_level_low = 0
-gtemp_level_high = 0
-gtemp_level_low = 0
-glight_level_high = 0
-glight_level_low = 0
+gwater_level_high = Database.water_level_high('Tropical')
+gwater_level_low = Database.water_level_low('Tropical')
+gtemp_level_high = Database.temp_level_high('Tropical')
+gtemp_level_low = Database.temp_level_low('Tropical')
+glight_level_high = Database.light_level_high('Tropical')
+glight_level_low = Database.light_level_low('Tropical')
 high = 0
 low = 0
 sensor_data = []
 new_data = 0 
+sensor_type = 'off'
 
 
 colour_light = "palegreen3"
@@ -45,48 +46,6 @@ window.configure(bg=colour_light)
 q = queue.Queue()
 
 
-'''style.use('ggplot')
-bar1 = None
-
-# Create an animated graph
-
-def animate(data):
-    global bar1
-    global high, low
-    h = np.empty(len(data))
-    h.fill(high)
-    l = np.empty(len(data))
-    l.fill(low)
-    xs = []
-    ys = []
-    for points in data:
-        if len(data) > new_data:
-            xs.append(new_data)
-            ys.append(data)
-            new_data = new_data + 1
-    fig = Figure(figsize=(4, 3.8), dpi=100)
-    ax1 = fig.add_subplot(1, 1, 1)
-    ax1.plot(xs, data)
-    ax1.plot(xs,l)
-    ax1.plot(xs,h)
-
-    if bar1:
-        bar1.get_tk_widget().pack_forget()
-
-    bar1 = FigureCanvasTkAgg(fig, window)
-    bar1.draw()
-    bar1.get_tk_widget().place(x=130, y=210)
-    window.after(100, animate(data))
-
-
-window.after(1, animate(sensor_data))
-
-# ani = animation.FuncAnimation(fig, animate, interval=1000)
-
-# bar1 = FigureCanvasTkAgg(fig, window)
-# bar1.get_tk_widget().place(x=130, y=185)'''
-
-
 width = 800
 height = 600
 XPOS = 350
@@ -98,31 +57,22 @@ data = pd.read_csv(r'Database\Plant_data.csv')
 
 #print(data)
 Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
-# I don't think we need this any more
-water_high = data['water_high'].tolist()
-water_low = data['water_low'].tolist()
-temp_high = data['temp_high'].tolist()
-temp_low = data['temp_low'].tolist()
-light_high = data['light_high'].tolist()
-light_low = data['light_low'].tolist()
-
-# I also think we don't need this 
-def extract_data(plant_name):
-    index = Categories.index(plant_name)
-    water_level_high = water_high[index]
-    water_level_low = water_low[index]
-    temp_level_low = temp_low[index]
-    temp_level_high = temp_high[index]
-    light_level_low = light_low[index]
-    light_level_high = light_high[index]
-
-    return water_level_high, water_level_low, temp_level_high, temp_level_low, light_level_high, light_level_low
 
 
 def entry_update(name):
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low = Database.extract_all(name)
-    text = extract_data(name)
+    global sensor_type, high, low 
+    if sensor_type == 'Light':
+        high = glight_level_high
+        low = glight_level_low
+    if sensor_type == 'Temperature':
+        high = gtemp_level_high
+        low = gtemp_level_low
+    if sensor_type == 'Moisture':
+        high = gwater_level_high
+        low = gwater_level_low
+    text = Database.extract_all(name)
     entry.delete("1.0", tk.END)
     entry.insert("1.0", text)
 
@@ -140,19 +90,22 @@ button_dict = {}
 def graph_update(type):
     global s
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
-    global high, low
+    global high, low, sensor_type
     text = "{} graph".format(type)
 
     if type == 'Light':
         ser.write(bytes('L', 'UTF-8'))
+        sensor_type = 'Light'
         high = glight_level_high
         low = glight_level_low
     if type == 'Moisture':
         ser.write(bytes('M', 'UTF-8'))
+        sensor_type = 'Moisture'
         high = gwater_level_high
         low = gwater_level_low
     if type == 'Temperature':
         ser.write(bytes('T', 'UTF-8'))
+        sensor_type = 'Tempature'
         high = gtemp_level_high
         low = gtemp_level_low
     if s == False:
@@ -215,13 +168,18 @@ for i in range(len(sensors)):
 def swi():
     global s
     if s: # On going to off
-        q.queue.clear()
+        with q.mutex:
+            q.queue.clear()
+            q.all_tasks_done.notify_all()
+            q.unfinished_tasks = 0
         s = False
         print("sending X")
         ser.write(bytes('X', 'UTF-8'))
         global reading_variable
         reading_variable = False
-        sensor_data.clear()
+        #sensor_data.clear()
+        xs.clear()
+        ys.clear()
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
         graph_label.delete("1.0", tk.END)
 
@@ -311,39 +269,6 @@ def animate():
 #Thread2.start()
 
 # Create an animated graph
-'''
-def animate(data):
-    global bar1
-    global high, low
-    h = np.empty(len(data))
-    h.fill(high)
-    l = np.empty(len(data))
-    l.fill(low)
-    xs = []
-    ys = []
-    for points in data:
-        if len(data) > new_data:
-            xs.append(new_data)
-            ys.append(data)
-            new_data = new_data + 1
-    fig = Figure(figsize=(4, 3.8), dpi=100)
-    ax1 = fig.add_subplot(1, 1, 1)
-    ax1.plot(xs, data)
-    ax1.plot(xs,l)
-    ax1.plot(xs,h)
-
-    if bar1:
-        bar1.get_tk_widget().pack_forget()
-
-    bar1 = FigureCanvasTkAgg(fig, window)
-    bar1.draw()
-    bar1.get_tk_widget().place(x=130, y=210)
-    window.after(100, animate(data))
-
-
-window.after(1, animate(sensor_data))
-'''
-
 q.join()
 ser = serial.Serial("COM4", 9600)
 
