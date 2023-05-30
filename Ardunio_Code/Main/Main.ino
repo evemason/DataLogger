@@ -20,7 +20,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //Temperature();
+  Temperature();
   //Light();
   //Average(temp);
   //Moisture();
@@ -34,7 +34,8 @@ void loop() {
   //delay(1000); //collects data every second
 
   //Serial.println(String(av));
-
+  
+  Serial.println(temp);
   if (Serial.available()>0){
     // read the imcoming byte 
     incomingByte = Serial.read();
@@ -58,7 +59,7 @@ void loop() {
     else{
       Serial.println(String(av));
     }
-    delay(500);
+    //delay(500);
   }
   if (incomingByte == 'L'){
     if (state != 0){

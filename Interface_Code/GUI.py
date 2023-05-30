@@ -142,6 +142,7 @@ def graph_update(type):
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     global high, low
     text = "{} graph".format(type)
+
     if type == 'Light':
         ser.write(bytes('L', 'UTF-8'))
         high = glight_level_high
@@ -158,6 +159,10 @@ def graph_update(type):
         swi()
     global reading_variable
     reading_variable = True
+
+    Thread1 = Thread(target=collect_data, daemon=True)
+    Thread1.start()
+
     graph_label.delete("1.0", tk.END)
     graph_label.insert("1.0", text)
 
@@ -210,6 +215,7 @@ for i in range(len(sensors)):
 def swi():
     global s
     if s: # On going to off
+        q.queue.clear()
         s = False
         print("sending X")
         ser.write(bytes('X', 'UTF-8'))
@@ -218,6 +224,7 @@ def swi():
         sensor_data.clear()
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
         graph_label.delete("1.0", tk.END)
+
     
     else: # off going to on 
         s = True
@@ -232,19 +239,26 @@ switch.place(x=450, y=5)
 
 def collect_data():
     global reading_variable
-    if (reading_variable == True):
-
+    print(reading_variable)
+    while (reading_variable == True):
+        print("hello")
+        print(s)
+        if (s == False):
+            break
+        print(ser.in_waiting)
         if (ser.in_waiting > 0):
+
             getData = ser.readline()
             dataString = int(getData.decode('utf-8'))
             sensor_data.append(dataString)
             print(sensor_data)
             q.put(dataString)
 
-    window.after(100, collect_data)
 
-Thread1 = Thread(target= collect_data)
-Thread1.start()
+    #window.after(100, collect_data)
+
+
+
 
 style.use('ggplot')
 bar1 = None
@@ -293,8 +307,8 @@ def animate():
     bar1.get_tk_widget().place(x=130, y=210)
     window.after(100, animate)
 
-Thread2 = Thread(target = animate)
-Thread2.start()
+#Thread2 = Thread(target = animate)
+#Thread2.start()
 
 # Create an animated graph
 '''
@@ -334,6 +348,8 @@ q.join()
 ser = serial.Serial("COM4", 9600)
 
 #window.after(1000, collect_data)
+
+window.after(100, animate)
 
 # create a drop down list to select the port input
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")
