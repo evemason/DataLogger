@@ -114,7 +114,7 @@ void loop() {
     digitalWrite(led_feedback, LOW);
     digitalWrite(feedback_pin, LOW);
     }
-
+  /*
   if (incomingByte == 'I'){
     digitalWrite(led_feedback, HIGH);
     //digitalWrite(feedback_pin, HIGH);
@@ -126,5 +126,5 @@ void loop() {
     low_value();
   }
   Light();
-  feedback(light);
+  feedback(light);*/
 }

@@ -18,7 +18,7 @@ void info() {
         }
     }
 }
-
+/*
 void high_value(){
   int i;
   //digitalWrite(feedback_pin, HIGH);
@@ -66,8 +66,9 @@ void feedback(int light_value){
 
 
 void bytes_high(){
-  for (int i, i<2, i++){
+  for (int i; i<2; i++){
     x = Serial.read();
     recieved_high[i] = x;
   }
 }
+*/
