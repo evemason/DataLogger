@@ -118,7 +118,7 @@ def graph_update(type):
         ser.write(bytes('I', 'UTF-8'))
         ser.write(bytes(str(len(high_string)), 'UTF-8'))
         for i in range(len(high_string)):
-            ser.write(bytes(high_string[i]), 'UTF-8')
+            ser.write(bytes(high_string[i], 'UTF-8'))
         ser.write(bytes(str(len(low_string)), 'UTF-8'))
         for i in range(len(low_string)):
             ser.write(bytes(low_string[i], 'UTF-8'))

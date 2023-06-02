@@ -9,9 +9,8 @@ extern void Light();
 extern void Moisture();
 extern void Average(int sensor);
 extern void info();
-extern void high_value();
-extern void low_value();
-extern void feedback(int value);
+extern void convert();
+extern void lightfeedback();
 
 float temperatureC;
 
@@ -90,6 +89,7 @@ void loop() {
     else{
       Serial.println(String(av));
     }
+    lightfeedback();
   }
   if (incomingByte == 'M'){
     delay(100);
@@ -114,17 +114,8 @@ void loop() {
     digitalWrite(led_feedback, LOW);
     digitalWrite(feedback_pin, LOW);
     }
-  /*
+
   if (incomingByte == 'I'){
-    digitalWrite(led_feedback, HIGH);
-    //digitalWrite(feedback_pin, HIGH);
-    //info();
-    high_value();
+    info();
   }
-  if (incomingByte == 'a'){
-    digitalWrite(led_feedback,LOW);
-    low_value();
-  }
-  Light();
-  feedback(light);*/
 }

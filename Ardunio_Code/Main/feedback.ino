@@ -93,8 +93,8 @@ void convert(){
 }
 
 void lightfeedback(){
-  lightaim = (high+low)/2
-  outvoltage = lightaim - light
+  lightaim = (high+low)/2;
+  outvoltage = lightaim - light;
   if(outvoltage > 0){
     analogWrite(LEDarray,outvoltage);
   }
