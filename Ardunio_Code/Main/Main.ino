@@ -19,7 +19,7 @@ void setup() {
   // put your setup code here, to run once:
   // speed at which arduino passes data to the computor
   Serial.begin(9600);
-  pinMode(Led, OUTPUT);
+  pinMode(LEDarray, OUTPUT);
   analogReference(DEFAULT);
 }
 

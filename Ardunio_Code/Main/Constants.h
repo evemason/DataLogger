@@ -1,6 +1,8 @@
 // sensor results
 extern const int temperature_pin = A0;
+extern const int LM35 = A1;
 extern const int light_pin = A2;
+extern const int LEDarray = 6; 
 extern const int moisture_pin = 8;
 extern const int AirValue = 620;   //you need to replace this value with Value_1
 extern const int WaterValue = 310;  //you need to replace this value with Value_2
@@ -10,12 +12,8 @@ extern const int led_temp = 3;
 extern const int led_feedback = 7;
 extern const int feedback_pin = 8;
 
-extern const int LM35 = A1;
 
 
-
-// Light output 
-extern const int Led = 2;
 
 // Restance values
 extern int R_const_light = 220000;
@@ -34,8 +32,6 @@ extern unsigned long light = 0;
 
 // Data array
 extern char incomingByte='X'; // variable to store incoming data in
-extern const byte numChars = 9;
-extern char receivedChars[numChars]= {'X','X','X','X','X','X','X','X','X'};
 extern int n = 0;
 
 //seperating high and low 
@@ -44,7 +40,23 @@ extern char recieved_high[numhigh];
 extern const byte numlow = 2;
 extern char recieved_low[numlow];
 
-int low = 0;
-int high = 0;
+extern int low = 0;
+extern int high = 0;
 
 extern char x;
+
+extern int count = 0;
+extern int count0 = 0;
+extern char lenh = 0;
+extern char lenl = 0;
+
+extern char recievedh2[2] = {'X','X'};
+extern char recievedh3[3] = {'X','X','X'};
+extern char recievedh4[4] = {'X','X','X','X'};
+
+extern char recievedl2[2] = {'X','X'};
+extern char recievedl3[3] = {'X','X','X'};
+extern char recievedl4[4] = {'X','X','X','X'};
+
+extern int lightaim = 0;
+extern int outvoltage = 0;
