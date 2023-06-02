@@ -7,7 +7,7 @@
 extern void Temperature();
 extern void Light();
 extern void Moisture();
-extern void Average(float sensor);
+extern void Average(int sensor);
 extern void info();
 extern void high_value();
 extern void low_value();
@@ -34,7 +34,7 @@ void loop() {
   //Average(temp_out);
   //Moisture();
   //Serial.println(String(temp)+ "," + String(light) + "," +String(moisture_voltage));
-  //Serial.println("temperature: " + String(av));
+  //Serial.println("temperature: " + String(temp_voltage));
   //delay(1000);
   //Serial.println("resistance: " + String(R));
 
