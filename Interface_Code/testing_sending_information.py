@@ -16,6 +16,12 @@ def send():
 button = tk.Button(text="press me", command = send)
 button.pack()
 
+def send1():
+    ser.write(bytes('T', 'UTF-8'))
+
+button1 = tk.Button(text="Reset", command = send1)
+button1.pack()
+
 ser = serial.Serial("COM4", 9600)
 window.mainloop()
 
