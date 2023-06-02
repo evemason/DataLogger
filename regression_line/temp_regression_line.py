@@ -1,25 +1,38 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.optimize import curve_fit
 
-resistance_values = np.array([800, 400, 200, 100, 60, 38, 21, 12, 9, 6, 4, 3, 2, 1.6, 1.1, 0.9, 0.6])
-temperature_values = np.array([-25, -12.5, 0, 12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100, 112.5, 125, 137.5, 150, 162.5, 175])
 
-resistance_values_new = resistance_values[:7]
-temperature_values_new = temperature_values[:7]
+resistance_values = np.array([25872,19814, 15300, 11909, 9340, 7378, 5869, 4700, 3788, 3071, 2505, 2055, 1694, 1405, 1170])
+temperature_values = np.array([-10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60])
 
-log_res = []
+popt, pcov = curve_fit(
+    lambda t, a , b, c: a*np.exp(b*t) + c,
+    resistance_values, temperature_values, p0 = (60, -0.00009, -10))
 
-log_res = np.log(resistance_values_new)
+a = popt[0]
+b = popt[1]
+c = popt[2]
 
-plt.plot(temperature_values_new, log_res)
+print(a)
+print(b)
+print(c)
+
+plt.plot(resistance_values, temperature_values)
 plt.show()
 
-coeff = np.polyfit(temperature_values_new, log_res, 1)
+coeff = np.polyfit(resistance_values, temperature_values , 2)
 print(coeff)
 
-xp = np.linspace(-25, 175, 100)
+xp = np.linspace(1000, 25872, 1000)
+yp = a * np.exp(b*xp) + c
 p = np.poly1d(coeff)
 
-plt.plot(temperature_values_new, log_res, '.', xp, p(xp), '-')
-plt.xlim(-25,80)
+#initial = 60 * np.exp(-0.00009*xp) -10
+
+
+#plt.plot(xp, initial, 'k')
+plt.plot(xp,yp, 'k')
+plt.plot(resistance_values, temperature_values, '.', xp, p(xp), '-')
+plt.xlim(1000,25872)
 plt.show()
