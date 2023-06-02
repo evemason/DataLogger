@@ -1,11 +1,17 @@
 void Temperature(){
   temp_voltage = analogRead(temperature_pin);
-  temp_R = (R_const_temp*1.1*temp_voltage)/(5*1023-temp_voltage*1.1);
-  //det = 0.049 * 0.049 - 4 * 0.0000948 * (5.3 - log(temp_R));
-  //det = pow(0.r049,2) - 4*9.48*pow(10,-5)*(5.3-log(temp_R));
-  //temp = (0.049-pow(det,0.5))/(2*9.48*pow(10,-5));
-  //temp = (0.049 - sqrt(det))/(2*0.0000948);
-  temp = (5.36-log(temp_R))/(0.0481);
+  R = (temp_voltage * R_const_temp)/(1023  - temp_voltage);
+
+  temp = 77.5*exp(-0.000182* R) - 6.7;
+
+  //temp = - 3.03 * pow(10, -2) * R + 8.756;
+
+  
+  
+  float temperature = analogRead(LM35);
+  temperatureC = (temperature * 500/1024) - 273;
+
+  temp_out = (temperatureC + temp)/2;
 }
 
 void Light(){

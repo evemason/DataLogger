@@ -10,22 +10,29 @@ extern const int led_temp = 3;
 extern const int led_feedback = 7;
 extern const int feedback_pin = 8;
 
+extern const int LM35 = A1;
+
+
 
 // Light output 
 extern const int Led = 2;
 
 // Restance values
 extern int R_const_light = 220000;
-extern int R_const_temp = 1000;
+extern int R_const_temp = 4700;
 
 // processing constants
 const int lenght = 3;
-extern unsigned long light_voltage = 0, temp_voltage = 0, temp_R = 0, moisture_voltage = 0, temp = 0, det = 0, light_current = 0, av =0, moisture=0;
+extern unsigned long light_voltage = 0, temp_voltage = 0, R = 0, moisture_voltage = 0, det = 0, light_current = 0, av =0, moisture=0;
 extern unsigned long average[lenght] = {0,0,0};
+
+extern unsigned long temp_out = 0;
 extern unsigned long soilmoisturepercent=0;
 extern unsigned long light = 0;
 // AnalogueReferene state 
 extern int state = 0;
+
+float temp = 0;
 
 // Data array
 extern char incomingByte='X'; // variable to store incoming data in

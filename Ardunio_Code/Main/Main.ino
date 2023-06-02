@@ -13,6 +13,8 @@ extern void high_value();
 extern void low_value();
 extern void feedback(int value);
 
+float temperatureC;
+
 void setup() {
   // put your setup code here, to run once:
   // speed at which arduino passes data to the computor
@@ -23,11 +25,17 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //Temperature();
+
+  
+
+  //temperatureC = temperature/30;
+  Temperature();
   //Light();
   //Average(light);
   //Moisture();
   //Serial.println(String(temp)+ "," + String(light) + "," +String(moisture_voltage));
+  Serial.println("temperature: " + String(temp_out));
+  //Serial.println("resistance: " + String(R));
 
   //temp_voltage = analogRead(temperature_pin);
   //Serial.println(temp);  
@@ -56,12 +64,12 @@ void loop() {
       analogReference(INTERNAL);
     }
     Temperature();
-    Average(temp);
+    Average(temp_out);
     digitalWrite(led_temp, HIGH);
     digitalWrite(led_moisture, LOW);
     digitalWrite(led_light, LOW);
     if (n<20){
-      Serial.println(String(temp));
+      Serial.println(String(temp_out));
       n = n+1;
     }
     else{
