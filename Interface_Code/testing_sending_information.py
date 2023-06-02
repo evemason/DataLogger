@@ -5,22 +5,56 @@ import tkinter as tk
 #bytes_low = (100).to_bytes(2, byteorder = 'big')
 
 window = tk.Tk()
-data = '400'
+datah2 = '40'
+datah3 = '400'
+datah4 = '4000'
 
-def send():
+datal2 = '20'
+datal3 = '200'
+datal4 = '2000'
+
+def send2():
     ser.write(bytes('I', 'UTF-8'))
-    for i in range(len(data)):
-        ser.write(bytes(data[i], 'UTF-8'))
+    ser.write(bytes(str(len(datah2)), 'UTF-8'))
+    for i in range(len(datah2)):
+        ser.write(bytes(datah2[i], 'UTF-8'))
+    ser.write(bytes(str(len(datal2)), 'UTF-8'))
+    for i in range(len(datal2)):
+        ser.write(bytes(datal2[i], 'UTF-8'))
 
 
-button = tk.Button(text="press me", command = send)
+button = tk.Button(text="data2", command = send2)
 button.pack()
 
-def send1():
-    ser.write(bytes('T', 'UTF-8'))
 
-button1 = tk.Button(text="Reset", command = send1)
-button1.pack()
+def send3():
+    ser.write(bytes('I', 'UTF-8'))
+    ser.write(bytes(str(len(datah3)), 'UTF-8'))
+    for i in range(len(datah3)):
+        ser.write(bytes(datah3[i], 'UTF-8'))
+    ser.write(bytes(str(len(datal3)), 'UTF-8'))
+    for i in range(len(datal3)):
+        ser.write(bytes(datal3[i], 'UTF-8'))
+
+
+button = tk.Button(text="data3", command = send3)
+button.pack()
+
+def send4():
+    ser.write(bytes('I', 'UTF-8'))
+    ser.write(bytes(str(len(datah4)), 'UTF-8'))
+    for i in range(len(datah4)):
+        ser.write(bytes(datah4[i], 'UTF-8'))
+    ser.write(bytes(str(len(datal4)), 'UTF-8'))
+    for i in range(len(datal4)):
+        ser.write(bytes(datal4[i], 'UTF-8'))
+ 
+
+
+button = tk.Button(text="data4", command = send4)
+button.pack()
+
+
 
 ser = serial.Serial("COM4", 9600)
 window.mainloop()
