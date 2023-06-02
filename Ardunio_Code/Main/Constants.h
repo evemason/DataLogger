@@ -23,14 +23,14 @@ extern int R_const_temp = 4700;
 
 // processing constants
 const int lenght = 3;
-extern unsigned long light_voltage = 0, temp_voltage = 0, R = 0, moisture_voltage = 0, det = 0, light_current = 0, av =0, moisture=0;
+extern unsigned long light_voltage = 0, temp_voltage = 0, R = 0, moisture_voltage = 0, det = 0, light_current = 0, moisture=0;
 extern unsigned long average[lenght] = {0,0,0};
 
-extern unsigned long temp_out = 0;
+extern float temp_out = 0;
+extern float av = 0;
 extern unsigned long soilmoisturepercent=0;
 extern unsigned long light = 0;
-// AnalogueReferene state 
-extern int state = 0;
+
 
 float temp = 0;
 

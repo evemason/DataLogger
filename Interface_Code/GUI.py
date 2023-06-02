@@ -47,6 +47,12 @@ window.configure(bg=colour_light)
 q = queue.Queue()
 
 
+#create a queue for the type of sensor
+q_sensor = queue.Queue()
+
+#create a queue for the recommendation
+q_recommendation = queue.Queue()
+
 width = 800
 height = 600
 XPOS = 350
@@ -110,18 +116,23 @@ def graph_update(type):
         swi()
     if type == 'Light':
 
+
         print("sending L")
         ser.write(bytes('L', 'UTF-8'))
         sensor_type = 'Light'
         high = glight_level_high
         low = glight_level_low
+
+
     if type == 'Moisture':
+
 
         print("sending M")
         ser.write(bytes('M', 'UTF-8'))
         sensor_type = 'Moisture'
         high = gwater_level_high
         low = gwater_level_low
+
     if type == 'Temperature':
 
         print("sending T")
@@ -248,9 +259,11 @@ def collect_data():
 
             getData = ser.readline()
             data = getData.decode('utf-8')
-            #print(data)
+            print(data)
             dataString = int(data)
             q.put(dataString)
+
+
 
 
 
@@ -274,7 +287,8 @@ def animate():
 
     if (q.qsize() >0):
         item = q.get()
-        #print("from queue is: ", item)
+
+        print("from queue is: ", item)
         ys.append(item)
         xs.append(counter - 2)
         if (counter<2):

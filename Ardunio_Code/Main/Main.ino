@@ -7,7 +7,7 @@
 extern void Temperature();
 extern void Light();
 extern void Moisture();
-extern void Average(int sensor);
+extern void Average(float sensor);
 extern void info();
 extern void high_value();
 extern void low_value();
@@ -29,12 +29,13 @@ void loop() {
   
 
   //temperatureC = temperature/30;
-  Temperature();
+  //Temperature();
   //Light();
-  //Average(light);
+  //Average(temp_out);
   //Moisture();
   //Serial.println(String(temp)+ "," + String(light) + "," +String(moisture_voltage));
-  Serial.println("temperature: " + String(temp_out));
+  //Serial.println("temperature: " + String(av));
+  //delay(1000);
   //Serial.println("resistance: " + String(R));
 
   //temp_voltage = analogRead(temperature_pin);
@@ -59,10 +60,7 @@ void loop() {
 
   if (incomingByte == 'T'){
     delay(100);
-    if (state != 0){
-      state = 0;
-      analogReference(INTERNAL);
-    }
+
     Temperature();
     Average(temp_out);
     digitalWrite(led_temp, HIGH);
@@ -79,10 +77,7 @@ void loop() {
   }
   if (incomingByte == 'L'){
     delay(100);
-    if (state != 1){
-      state = 1;
-      analogReference(DEFAULT);
-    }
+
     Light();
     Average(light);
     digitalWrite(led_light, HIGH);
@@ -98,10 +93,7 @@ void loop() {
   }
   if (incomingByte == 'M'){
     delay(100);
-    if (state != 1){
-      state = 1;
-      analogReference(DEFAULT);
-    }
+
     Moisture();
     Average(soilmoisturepercent);
     digitalWrite(led_moisture, HIGH);
