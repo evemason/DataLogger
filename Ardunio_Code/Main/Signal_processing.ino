@@ -2,7 +2,7 @@ void Temperature(){
   temp_voltage = analogRead(temperature_pin);
   R = (temp_voltage * R_const_temp)/(1023  - temp_voltage);
 
-  temp = 77.5*exp(-0.000182* R) - 6.7;
+  float temp = 77.5*exp(-0.000182* R) - 6.7;
 
   //temp = - 3.03 * pow(10, -2) * R + 8.756;
 
