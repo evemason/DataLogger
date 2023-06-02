@@ -15,7 +15,7 @@ from threading import Thread
 import queue
 from Databaseclass import Database
 
-import gc ## this might solve the problem but i am not sure how. 
+import gc ## this might solve the problem but i am not sure how.
 
 # Global variables
 s = False
@@ -29,8 +29,11 @@ glight_level_low = Database.light_level_low('Tropical')
 high = 0
 low = 0
 sensor_data = []
-new_data = 0 
+new_data = 0
 sensor_type = 'off'
+check_light = 3
+check_moist = 3
+check_temp = 3
 #Thread1 = Thread()
 
 colour_light = "palegreen3"
@@ -48,10 +51,8 @@ q = queue.Queue()
 
 
 #create a queue for the type of sensor
-q_sensor = queue.Queue()
 
-#create a queue for the recommendation
-q_recommendation = queue.Queue()
+
 
 width = 800
 height = 600
@@ -66,7 +67,7 @@ Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
 def entry_update(name):
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low = Database.extract_all(name)
-    global sensor_type, high, low 
+    global sensor_type, high, low
     if sensor_type == 'Light':
         high = glight_level_high
         low = glight_level_low
@@ -86,13 +87,9 @@ def entry_update(name):
     if sensor_type == 'Moisture':
         high = gwater_level_high
         low = gwater_level_low
-    text = Database.extract_all(name)
-    entry.delete("1.0", tk.END)
-    entry.insert("1.0", text)
 
 
-entry = Text(window, bd=0, width=25, height=22)
-entry.place(x=550, y=220)
+
 
 recommendations = Label(window, text="Plant care recommendations", bg=colour_dark, fg="white", width=28)
 recommendations.place(x=550, y=200)
@@ -116,7 +113,6 @@ def graph_update(type):
         swi()
     if type == 'Light':
 
-
         print("sending L")
         ser.write(bytes('L', 'UTF-8'))
         sensor_type = 'Light'
@@ -125,7 +121,6 @@ def graph_update(type):
 
 
     if type == 'Moisture':
-
 
         print("sending M")
         ser.write(bytes('M', 'UTF-8'))
@@ -223,7 +218,9 @@ def swi():
     else: # On going to off
 
         q.queue.clear()
+
         #q.all_tasks_done.notify_all()
+
         q.unfinished_tasks = 0
         s = False
         print("sending X")
@@ -283,6 +280,8 @@ def animate():
     global bar1
     global counter
     global high, low
+    global sensor_type
+    global check_temp, check_light, check_moist
 
 
     if (q.qsize() >0):
@@ -291,6 +290,83 @@ def animate():
         print("from queue is: ", item)
         ys.append(item)
         xs.append(counter - 2)
+
+
+
+        if (sensor_type == 'Light'):
+            # want light recommendation
+            check_moist = 3
+            check_temp = 3
+            if (item > high):
+                if (check_light != 0):
+                    text = 'put in a shadier spot'
+                    check = 0
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text)
+
+            if (item < low):
+                if (check_light != 1):
+                    text = 'put in a sunnier spot'
+                    check = 1
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text)
+            else:
+                if (check_light != 2):
+                    text1 = 'perfect light conditions for this plant'
+                    check = 2
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text1)
+
+        elif (sensor_type == 'Moisture'):
+            # want light recommendation
+            check_light = 3
+            check_temp = 3
+            if (item > high):
+                if (check_moist != 0):
+                    text = 'dry out the soil'
+                    check = 0
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text)
+
+            if (item < low):
+                if (check_moist != 1):
+                    text = 'water the plant'
+                    check = 1
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text)
+            else:
+                if (check_moist != 2):
+                    text1 = 'perfect moisture conditions for this plant'
+                    check = 2
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text1)
+
+
+        elif (sensor_type == 'Temperature'):
+            # want light recommendation
+            check_light = 3
+            check_moist = 3
+            if (item > high):
+                if (check_temp != 0):
+                    text = 'put in a cooler place'
+                    check = 0
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text)
+
+            if (item < low):
+                if (check_temp != 1):
+                    text = 'put in a warmer place'
+                    check = 1
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text)
+            else:
+                if (check_temp != 2):
+                    text1 = 'perfect temperature conditions    for this plant'
+                    check = 2
+                    entry.delete("1.0", tk.END)
+                    entry.insert("1.0", text1)
+
+
         if (counter<2):
             ys.clear()
             xs.clear()
@@ -298,6 +374,7 @@ def animate():
 
 
         q.task_done()
+
 
     #print(ys)
 
@@ -328,6 +405,8 @@ window.after(50, animate)
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")
 com_label.place(x = 120, y = 10)
 
+entry = Text(window, bd=0, width=25, height=22, font = 'Arial', fg = colour_dark)
+entry.place(x=550, y=220)
 
 def com_select():
     global clicked_com
