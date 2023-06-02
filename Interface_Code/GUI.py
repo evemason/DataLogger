@@ -109,10 +109,19 @@ def graph_update(type):
     global reading_variable
     reading_variable = True
 
+    high_string = str(glight_level_high)
+    low_string = str(glight_level_low)
+
     if s == False:
         swi()
     if type == 'Light':
-
+        ser.write(bytes('I', 'UTF-8'))
+        ser.write(bytes(str(len(high_string)), 'UTF-8'))
+        for i in range(len(high_string)):
+            ser.write(bytes(high_string[i]), 'UTF-8')
+        ser.write(bytes(str(len(low_string)), 'UTF-8'))
+        for i in range(len(low_string)):
+            ser.write(bytes(low_string[i], 'UTF-8'))
         print("sending L")
         ser.write(bytes('L', 'UTF-8'))
         sensor_type = 'Light'
