@@ -32,7 +32,11 @@ p = np.poly1d(coeff)
 
 
 #plt.plot(xp, initial, 'k')
-plt.plot(xp,yp, 'k')
-plt.plot(resistance_values, temperature_values, '.', xp, p(xp), '-')
+plt.plot(xp,yp, 'k', label = 'exponential fit')
+plt.plot(resistance_values, temperature_values, '.', label = 'data points')
+plt.plot(xp, p(xp), '-', label = 'polynomial fit')
+plt.xlabel('resistance of thermistor (ohms)')
+plt.ylabel('temperature (degrees C)')
+plt.legend()
 plt.xlim(1000,25872)
 plt.show()
