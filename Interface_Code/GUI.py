@@ -300,8 +300,42 @@ def collect_data():
             q.put(dataString)
 
 
-
-
+def instructions():
+    helpWindow = Toplevel(window)
+    helpWindow.title("Instructions")
+    helpWindow.config(bg = colour_dark)
+    helpWindow.geometry("700x200")
+    label0 = tk.Label(helpWindow,
+                   text="1. Select the communication port you would like to use if it is not already preselected",
+                   font = "Arial", fg = 'white', bg = colour_dark)
+    label0.pack()
+    label1 = tk.Label(helpWindow,
+                   text="2. Press the type of plant you have using the buttons on the side",
+                   font = "Arial", fg = 'white', bg = colour_dark)
+    label1.pack()
+    label2 = tk.Label(helpWindow,
+                   text="3. Click the sensor you would like to read",
+                   font = "Arial", fg = 'white', bg = colour_dark)
+    label2.pack()
+    label3 = tk.Label(helpWindow,
+                   text="4. Advice should appear in the plant care recommendation window and the graph should update",
+                   font = "Arial", fg = 'white', bg = colour_dark)
+    label3.pack()
+    label4 = tk.Label(helpWindow,
+                   text="5. Keep changing the measurement type until satisfied",
+                   font = "Arial", fg = 'white', bg = colour_dark)
+    label4.pack()
+    label5 = tk.Label(helpWindow,
+                   text="6. Press the on button to turn the device off",
+                   font = "Arial", fg = 'white', bg = colour_dark)
+    label5.pack()
+    label6 = tk.Label(helpWindow,
+                   text="7. Close the window",font = "Arial", fg = 'white', bg = colour_dark)
+    label6.pack()
+    label7 = tk.Label(helpWindow,
+                   text="Note: it is possible to change the plant type to care for a different plant without restarting",
+                   font = "Arial", fg = 'white', bg = colour_dark)
+    label7.pack()
 
 style.use('ggplot')
 bar1 = None
@@ -458,6 +492,10 @@ entry.place(x=550, y=210)
 # Create On off button
 switch = tk.Button(window, text="OFF", bd=0, font = "Arial", bg="lightgrey", fg="black", height = 1, width = 10, command=swi)
 switch.place(x=450, y=5)
+
+
+instructions_button = tk.Button(window, text = "Instructions", command = instructions, bg = colour_dark, fg = 'white')
+instructions_button.place(x = 570, y = 5)
 
 
 '''function to check which com ports are available and then update the com port drop down so the selection is from 
