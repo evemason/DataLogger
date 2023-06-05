@@ -58,7 +58,7 @@ void loop() {
     }
 
   if (incomingByte == 'T'){
-    delay(100);
+    delay(500);
 
     Temperature();
     Average(temp_out);
@@ -75,7 +75,7 @@ void loop() {
     //delay(500);
   }
   if (incomingByte == 'L'){
-    delay(100);
+    delay(500);
 
     Light();
     Average(light);
@@ -92,10 +92,10 @@ void loop() {
     lightfeedback();
   }
   if (incomingByte == 'M'){
-    delay(100);
+    delay(500);
 
     Moisture();
-    Average(soilmoisturepercent);
+    Average(moisture);
     digitalWrite(led_moisture, HIGH);
     digitalWrite(led_light, LOW);
     digitalWrite(led_temp, LOW);
@@ -111,8 +111,6 @@ void loop() {
     digitalWrite(led_temp, LOW);
     digitalWrite(led_light, LOW);
     digitalWrite(led_moisture, LOW);
-    digitalWrite(led_feedback, LOW);
-    digitalWrite(feedback_pin, LOW);
     }
 
   if (incomingByte == 'I'){

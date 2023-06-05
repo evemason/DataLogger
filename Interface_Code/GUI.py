@@ -8,12 +8,12 @@ import pandas as pd
 from tkinter import ttk
 import serial.tools.list_ports
 import serial
-import time
 import tkinter as tk
 import numpy as np
 from threading import Thread
 import queue
 from Databaseclass import Database
+import tkinter.font as fnt
 
 import gc ## this might solve the problem but i am not sure how.
 
@@ -63,36 +63,41 @@ text = str(width) + "x" + str(height) + "+" + str(XPOS) + "+" + str(YPOS)
 
 Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
 
-
+# When the plant buttons are clicked, graph is cleared 
 def entry_update(name):
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low = Database.extract_all(name)
     global sensor_type, high, low
+
+    high_string = str(glight_level_high)
+    low_string = str(glight_level_low)
+
     if sensor_type == 'Light':
         high = glight_level_high
         low = glight_level_low
-        levels = str(high) + "a" + str(low)
-        levels_string = str(levels)
-        bytes_high = high.to_bytes(2, byteorder = 'big') #not used at the moment but could be useful to send the data
-        bytes_low = low.to_bytes(2, byteorder = 'big')
-        ser.write(bytes(str(high), 'utf-8'))
-        ser.write(bytes('a', 'utf-8'))
-        ser.write(bytes(str(low), 'utf-8'))
-        #ser.write(bytes_high)
-        #ser.write(bytes_low)
+        ser.write(bytes('I', 'UTF-8'))
+        ser.write(bytes(str(len(high_string)), 'UTF-8'))
+        for i in range(len(high_string)):
+            ser.write(bytes(high_string[i], 'UTF-8'))
+        ser.write(bytes(str(len(low_string)), 'UTF-8'))
+        for i in range(len(low_string)):
+            ser.write(bytes(low_string[i], 'UTF-8'))
+        ser.write(bytes('L', 'UTF-8'))
 
     if sensor_type == 'Temperature':
         high = gtemp_level_high
         low = gtemp_level_low
+        ser.write(bytes('T', 'UTF-8'))
     if sensor_type == 'Moisture':
         high = gwater_level_high
         low = gwater_level_low
+        ser.write(bytes('M', 'UTF-8'))
 
 
 
 
-recommendations = Label(window, text="Plant care recommendations", bg=colour_dark, fg="white", width=28)
-recommendations.place(x=550, y=200)
+recommendations = Label(window, text="Plant care recommendations", bg=colour_dark, fg="white", width=26, height = 1,font = fnt.Font(size = 13))
+recommendations.place(x=550, y=185)
 
 button_dict = {}
 
@@ -114,6 +119,7 @@ def graph_update(type):
 
     if s == False:
         swi()
+
     if type == 'Light':
         ser.write(bytes('I', 'UTF-8'))
         ser.write(bytes(str(len(high_string)), 'UTF-8'))
@@ -122,6 +128,7 @@ def graph_update(type):
         ser.write(bytes(str(len(low_string)), 'UTF-8'))
         for i in range(len(low_string)):
             ser.write(bytes(low_string[i], 'UTF-8'))
+        ser.write(bytes('L', 'UTF-8'))
         print("sending L")
         ser.write(bytes('L', 'UTF-8'))
         sensor_type = 'Light'
@@ -169,7 +176,6 @@ for i in range(len(Categories)):
         q.unfinished_tasks = 0
         xs.clear()
         ys.clear()
-        ser.write(bytes('I', 'utf-8'))
         #sendings the information light levels in entry_update
         global counter
         counter = 0
@@ -191,7 +197,6 @@ for i in range(len(sensors)):
     def function1(x=sensors[i]):
 
         q.queue.clear()
-        #q.all_tasks_done.notify_all()
         q.unfinished_tasks = 0
         xs.clear()
         ys.clear()
@@ -219,7 +224,8 @@ def swi():
         s = True
         Thread1 = Thread(target=collect_data, daemon=True)
         Thread1.start()
-        #s = True
+        print("sending X")
+        ser.write(bytes('X', 'UTF-8'))
         xs.clear()
         ys.clear()
         switch.configure(text = "ON", bg = "palegreen", fg="white")
@@ -227,16 +233,12 @@ def swi():
     else: # On going to off
 
         q.queue.clear()
-
-        #q.all_tasks_done.notify_all()
-
         q.unfinished_tasks = 0
         s = False
         print("sending X")
         ser.write(bytes('X', 'UTF-8'))
         global reading_variable
         reading_variable = False
-        #sensor_data.clear()
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
         graph_label.delete("1.0", tk.END)
         #print(Thread1.is_alive())
@@ -308,21 +310,20 @@ def animate():
             check_temp = 3
             if (item > high):
                 if (check_light != 0):
-                    text = 'put in a shadier spot'
-                    check = 0
+                    text2 = 'Put in a shadier spot'
+                    check_light = 0
                     entry.delete("1.0", tk.END)
-                    entry.insert("1.0", text)
-
+                    entry.insert("1.0", text2)
             if (item < low):
                 if (check_light != 1):
-                    text = 'put in a sunnier spot'
-                    check = 1
+                    text = 'Put in a sunnier spot'
+                    check_light = 1
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text)
-            else:
+            if(item>=low and item<=high):
                 if (check_light != 2):
-                    text1 = 'perfect light conditions for this plant'
-                    check = 2
+                    text1 = 'Perfect light conditions for this plant'
+                    check_light = 2
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text1)
 
@@ -332,21 +333,21 @@ def animate():
             check_temp = 3
             if (item > high):
                 if (check_moist != 0):
-                    text = 'dry out the soil'
-                    check = 0
+                    text = 'Dry out the soil'
+                    check_moist = 0
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text)
 
             if (item < low):
                 if (check_moist != 1):
-                    text = 'water the plant'
-                    check = 1
+                    text = 'Water the plant'
+                    check_moist = 1
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text)
-            else:
+            if(item>=low and item<=high):
                 if (check_moist != 2):
-                    text1 = 'perfect moisture conditions for this plant'
-                    check = 2
+                    text1 = 'Perfect moisture             conditions for this plant'
+                    check_moist = 2
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text1)
 
@@ -357,21 +358,21 @@ def animate():
             check_moist = 3
             if (item > high):
                 if (check_temp != 0):
-                    text = 'put in a cooler place'
-                    check = 0
+                    text = 'Put in a cooler place'
+                    check_temp = 0
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text)
 
             if (item < low):
                 if (check_temp != 1):
-                    text = 'put in a warmer place'
-                    check = 1
+                    text = 'Put in a warmer place'
+                    check_temp = 1
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text)
-            else:
+            if(item>=low and item<=high):
                 if (check_temp != 2):
-                    text1 = 'perfect temperature conditions    for this plant'
-                    check = 2
+                    text1 = 'Perfect temperature        conditions for this plant'
+                    check_temp = 2
                     entry.delete("1.0", tk.END)
                     entry.insert("1.0", text1)
 
@@ -383,9 +384,6 @@ def animate():
 
 
         q.task_done()
-
-
-    #print(ys)
 
     fig = Figure(figsize=(4,3.8), dpi = 100)
     ax1 = fig.add_subplot(1,1,1)
@@ -414,8 +412,8 @@ window.after(50, animate)
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")
 com_label.place(x = 120, y = 10)
 
-entry = Text(window, bd=0, width=25, height=22, font = 'Arial', fg = colour_dark)
-entry.place(x=550, y=220)
+entry = Text(window, bd=0, width=21, height=16, font = 'Arial', fg = colour_dark)
+entry.place(x=550, y=210)
 
 def com_select():
     global clicked_com
@@ -427,8 +425,8 @@ def com_select():
     clicked_com = StringVar()
     clicked_com.set(coms[0])
     drop_coms = OptionMenu(window, clicked_com, *coms)
-    drop_coms.config(width = 20)
-    drop_coms.place(x = 280, y =13)
+    drop_coms.config(width = 20,bd=0,bg="lightgrey")
+    drop_coms.place(x = 280, y =11)
 
 
 com_select()

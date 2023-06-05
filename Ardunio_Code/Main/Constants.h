@@ -3,16 +3,12 @@ extern const int temperature_pin = A0;
 extern const int LM35 = A1;
 extern const int light_pin = A2;
 extern const int LEDarray = 6; 
-extern const int moisture_pin = 8;
+extern const int moisture_pin = A3;
 extern const int AirValue = 620;   //you need to replace this value with Value_1
 extern const int WaterValue = 310;  //you need to replace this value with Value_2
 extern const int led_light = 2;
 extern const int led_moisture = 4;
 extern const int led_temp = 3;
-extern const int led_feedback = 7;
-extern const int feedback_pin = 8;
-
-
 
 
 // Restance values
