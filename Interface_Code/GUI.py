@@ -316,7 +316,7 @@ def instructions():
     helpWindow = Toplevel(window)
     helpWindow.title("Instructions")
     helpWindow.config(bg = colour_dark)
-    helpWindow.geometry("700x200")
+    helpWindow.geometry("900x250")
     label0 = tk.Label(helpWindow,
                    text="1. Select the communication port you would like to use if it is not already preselected",
                    font = "Arial", fg = 'white', bg = colour_dark)
@@ -469,6 +469,12 @@ def animate():
     ax1 = fig.add_subplot(1,1,1)
     ax1.axhline(y=high, color='r', linestyle='--')
     ax1.axhline(y=low, color='r', linestyle='--')
+    if sensor_type == "Light":
+        ax1.set_title("lux",loc='left', fontsize = "small")
+    if sensor_type == "Moisture":
+        ax1.set_title("%",loc='left', fontsize = "small")
+    if sensor_type == "Temperature":
+        ax1.set_title("°C",loc='left', fontsize = "small")
     ax1.plot(xs, ys)
     if bar1:
         bar1.get_tk_widget().pack_forget()

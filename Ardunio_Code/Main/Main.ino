@@ -33,7 +33,7 @@ void loop() {
     }
 
   if (incomingByte == 'T'){
-    delay(200);
+    delay(300);
 
     Temperature();
     Average(temp_out);
@@ -49,7 +49,7 @@ void loop() {
     }
   }
   if (incomingByte == 'L'){
-    delay(200);
+    delay(300);
 
     Light();
     Average(light);
@@ -66,7 +66,7 @@ void loop() {
     lightfeedback();
   }
   if (incomingByte == 'M'){
-    delay(200);
+    delay(300);
 
     Moisture();
     Average(moisture);

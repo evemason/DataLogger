@@ -18,7 +18,10 @@ void Light(){
   light_voltage = analogRead(light_pin);
   //light_current = 1000000*5*light_voltage/(R_const_light*1023);
   //light = exp(log(light_current)-0.24);
-  light = 1023 - light_voltage;
+  light = (1023 - light_voltage - 200)/1.5;
+  if(light < 0){
+    light = 0;
+  }
 }
 
 void Moisture(){
