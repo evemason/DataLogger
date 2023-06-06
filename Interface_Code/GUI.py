@@ -16,24 +16,30 @@ from Databaseclass import Database
 import tkinter.font as fnt
 
 
+# catagories of different plant types to create different buttons
+Categories = ["Tropical", "Cactus", "Alpine", "Orchids", "Climbers", "Ferns"]
+
 # Global variables
 s = False #this a variable to determine the state of the system on or off.
 reading_variable = False # this is to determine whether data should be collected from the arduino
 
 # the following global variables are read from the database to determine the ideal levels
-gwater_level_high = Database.water_level_high('Tropical')
-gwater_level_low = Database.water_level_low('Tropical')
-gtemp_level_high = Database.temp_level_high('Tropical')
-gtemp_level_low = Database.temp_level_low('Tropical')
-glight_level_high = Database.light_level_high('Tropical')
-glight_level_low = Database.light_level_low('Tropical')
+gwater_level_high = Database.water_level_high(Categories[0])
+gwater_level_low = Database.water_level_low(Categories[0])
+gtemp_level_high = Database.temp_level_high(Categories[0])
+gtemp_level_low = Database.temp_level_low(Categories[0])
+glight_level_high = Database.light_level_high(Categories[0])
+glight_level_low = Database.light_level_low(Categories[0])
 
 # values to plot on the graph for the high and low levels
 high = 0
 low = 0
 
 # variable to say which sensor button has been pressed
-sensor_type = 'off'
+sensor_type = 'Off'
+
+# variable to say which plant type has been selected
+plant_type = Categories[0]
 
 # variables used to update the plant care recommendations
 check_light = 3
@@ -45,7 +51,7 @@ colour_light = "palegreen3"
 colour_dark = "palegreen4"
 
 # catagories of different plant types to create different buttons
-Categories = ["Tropical", "Cactus", "Alpine", "Bulbs", "Climbers", "Ferns"]
+Categories = ["Tropical", "Cactus", "Alpine", "Orchids", "Climbers", "Ferns"]
 
 
 # create the window using tkinter
@@ -124,7 +130,7 @@ def graph_update(type):
     global gwater_level_high, gwater_level_low, gtemp_level_high, gtemp_level_low, glight_level_high, glight_level_low
     global high, low, sensor_type
 
-    text = "{} graph".format(type)
+    text = "{} graph - {}".format(type, plant_type)
     print("sensor button pressed")
 
     global reading_variable
@@ -196,7 +202,15 @@ for i in range(len(Categories)):
         ys.clear()
 
         #sendings the information light levels in entry_update
-        global counter
+        global counter, plant_type, sensor_type
+        plant_type = x
+        if sensor_type == "Off":
+            text = plant_type
+        else:
+            text = "{} graph - {}".format(sensor_type, plant_type)
+        graph_label.delete("1.0", tk.END)
+        graph_label.insert("1.0", text)
+
         counter = 0
         return entry_update(x)
 
@@ -265,13 +279,11 @@ def swi():
         s = False
         print("sending X")
         ser.write(bytes('X', 'UTF-8'))
-        global reading_variable
+        global reading_variable, sensor_type
         #stops reading the data
         reading_variable = False
         switch.configure(text = "OFF" , bg = "lightgrey", fg="black")
-
-        #not sure we want to delete the graph label need to test
-        graph_label.delete("1.0", tk.END)
+        sensor_type = "Off"
 
 
 '''function to read the incoming data from the serial this happens in a thread so it is important to use a queue 
@@ -466,7 +478,7 @@ def animate():
     bar1.get_tk_widget().place(x=130, y=210)
 
     # this animates the graph
-    window.after(50, animate)
+    window.after(5, animate)
 
 
 
@@ -474,7 +486,7 @@ def animate():
 
 
 # this animates the graph every 50ms
-window.after(50, animate)
+window.after(5, animate)
 
 # create a drop down list to select the port input
 com_label = tk.Label(window, text="select COM port", bg=colour_dark, fg="white", font="Arial")

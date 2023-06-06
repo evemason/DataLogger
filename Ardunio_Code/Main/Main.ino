@@ -23,32 +23,7 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 
-  
-
-  //temperatureC = temperature/30;
-  //Temperature();
-  //Light();
-  //Average(temp_out);
-  //Moisture();
-  //Serial.println(String(temp)+ "," + String(light) + "," +String(moisture_voltage));
-  //Serial.println("temperature: " + String(temp_voltage));
-  //delay(1000);
-  //Serial.println("resistance: " + String(R));
-
-  //temp_voltage = analogRead(temperature_pin);
-  //Serial.println(temp);  
-  
-  //Serial.println(String(light_voltage) + "," + String(light_current)+  "," + String(light)+  "," + String(av));
-  //Serial.println(av);
-  //delay(1000); //collects data every second
-
-  //Serial.println(String(av) + "computed average");
-  //Serial.println("average 0 " + String(average[0]));
-  //Serial.println("average 1 " + String(average[1]));
-  //Serial.println("average 2 " + String(average[2]));
-  
   //Serial.println(light_voltage);
   if (Serial.available()>0){
     // read the imcoming byte 
@@ -58,7 +33,7 @@ void loop() {
     }
 
   if (incomingByte == 'T'){
-    delay(500);
+    delay(200);
 
     Temperature();
     Average(temp_out);
@@ -72,10 +47,9 @@ void loop() {
     else{
       Serial.println(String(av));
     }
-    //delay(500);
   }
   if (incomingByte == 'L'){
-    delay(500);
+    delay(200);
 
     Light();
     Average(light);
@@ -92,7 +66,7 @@ void loop() {
     lightfeedback();
   }
   if (incomingByte == 'M'){
-    delay(500);
+    delay(200);
 
     Moisture();
     Average(moisture);
