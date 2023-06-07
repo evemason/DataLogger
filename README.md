@@ -2,7 +2,7 @@ We have made a plant care system to help novices grow plants. The system logs li
 
 To run the code:
 
-1. upload the Arduino code located in the folder Arduino_Code titled Main
+1. Upload the Arduino code located in the folder Arduino_Code titled Main
 2. Run GUI.py this is located in the Interface_Code folder 
 3. To run this 3 libraries need to be installed: Tkinter and PySerial and matplotlib
 
