@@ -9,17 +9,17 @@ To run the code:
 
 Features:
 
-Measure temperature, light and humidity. 
-Has 2 way commmunication between Arduino and Computer.
-Sends data to the computer every 300 ms. 
-Controls the light levels. 
-Linked to a database to provide tailored plant care recommendations based on specific plant types. 
-Ability to connect and monitor multiple plants using the same interface. 
+* Measure temperature, light and humidity. 
+* Has 2 way commmunication between Arduino and Computer.
+* Sends data to the computer every 300 ms. 
+* Controls the light levels. 
+* Linked to a database to provide tailored plant care recommendations based on specific plant types. 
+* Ability to connect and monitor multiple plants using the same interface. 
 
 
 Sensor farnell order codes:
 
-Phototransitor : 1497676
-Thermistor : 1187027
-Soil moisture level sensor : 2946124
-LM335 temperature sensor: 3124172
+* Phototransitor : 1497676
+* Thermistor : 1187027
+* Soil moisture level sensor : 2946124
+* LM335 temperature sensor: 3124172
