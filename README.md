@@ -9,7 +9,7 @@ To run the code:
 
 Features:
 
-* Measure temperature, light and humidity. 
+* Measure temperature, light and soil moisture levels. 
 * Has 2 way commmunication between Arduino and Computer.
 * Sends data to the computer every 300 ms. 
 * Controls the light levels. 
