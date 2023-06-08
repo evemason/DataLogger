@@ -90,10 +90,10 @@ void convert(){
     int fourth = recievedl4[3] - '0';
     high = first*1000 + second*100 + third*10 + fourth;
   }
+  lightaim = (high+low)/2;
 }
 
 void lightfeedback(){
-  lightaim = (high+low)/2;
   outvoltage = lightaim - light;
   if(outvoltage > 0){
     analogWrite(LEDarray,outvoltage);
